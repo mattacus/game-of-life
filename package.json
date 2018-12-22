@@ -20,5 +20,8 @@
   "homepage": "https://github.com/mattacus/game-of-life#readme",
   "devDependencies": {
     "parcel-bundler": "^1.11.0"
+  },
+  "dependencies": {
+    "stats.js": "^0.17.0"
   }
 }

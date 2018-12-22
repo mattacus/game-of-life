@@ -1,10 +1,4 @@
-/*jslint onevar: true, undef: false, nomen: true, eqeqeq: true, plusplus: false, bitwise: true, regexp: true, newcap: true, immed: true  */
-
-/**
- * Game of Life - JS & CSS
- * http://pmav.eu
- * 04/Sep/2010
- */
+import Stats from 'stats.js';
 
 (function () {
 
@@ -215,7 +209,7 @@
           s = this.initialState;
         }
 
-        state = jsonParse(decodeURI(s));
+        state = JSON.parse(decodeURI(s));
 
         for (i = 0; i < state.length; i++) {
           for (y in state[i]) {
