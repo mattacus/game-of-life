@@ -26,7 +26,7 @@
     columns : 0,
     rows : 0,
 
-    waitTime: 0,
+    waitTime: 50,
     generation : 0,
 
     running : false,
