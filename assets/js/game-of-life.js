@@ -1,29 +1,15 @@
-import Stats from 'stats.js';
 
 const midX = window.innerWidth / 2;
 const midY = window.innerHeight / 2;
 
 (function () {
 
-  var stats = new Stats();
-  stats.setMode( 0 ); // 0 FPS, 1 MS
-
-  // align top-left
-  stats.domElement.style.position = 'absolute';
-  stats.domElement.style.right = '0px';
-  stats.domElement.style.bottom = '0px';
-  stats.domElement.style.zIndex = '-999999';
-
-  document.addEventListener("DOMContentLoaded", function() {
-    document.body.appendChild( stats.domElement );
-  });
-
   var GOL = {
 
     columns : 0,
     rows : 0,
 
-    waitTime: 30,
+    waitTime: 50,
     generation : 0,
 
     running : false,
@@ -375,9 +361,7 @@ const midY = window.innerHeight / 2;
       // Flow Control
       if (GOL.running) {
         function animateFrame() {
-          stats.begin();
           window.requestAnimationFrame(GOL.nextStep);
-          stats.end();
         }
 
         if (GOL.waitTime > 0) setTimeout(function() { animateFrame() }, GOL.waitTime);
