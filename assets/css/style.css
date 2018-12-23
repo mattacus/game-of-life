@@ -7,6 +7,7 @@ body {
   font-family: "Verdana", sans-serif;
   font-size: 14px;
   color: #000000;
+  margin: auto;
 }
 
 a {
@@ -37,7 +38,7 @@ abbr {
 
 #wrapper {
   margin: auto;
-  width: 902px;
+  width: auto;
 }
 
 #title {

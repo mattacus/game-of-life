@@ -1,5 +1,8 @@
 import Stats from 'stats.js';
 
+const midX = window.innerWidth / 2;
+const midY = window.innerHeight / 2;
+
 (function () {
 
   var stats = new Stats();
@@ -20,7 +23,7 @@ import Stats from 'stats.js';
     columns : 0,
     rows : 0,
 
-    waitTime: 50,
+    waitTime: 30,
     generation : 0,
 
     running : false,
@@ -52,18 +55,18 @@ import Stats from 'stats.js';
     },
 
     // Initial state
-    initialState : '[{"39":[110]},{"40":[112]},{"41":[109,110,113,114,115]}]',
+    initialState: `[{"${(midY / 5)}":[${(midX / 5) + 1}]},{"${(midY / 5) + 1}":[${(midX / 5) + 3}]},{"${(midY / 5) + 2}":[${(midX / 5)},${(midX / 5) + 1},${(midX / 5) + 4},${(midX / 5) + 5},${(midX / 5) + 6}]}]`,
 
     // Trail state
     trail : {
-      current: true,
+      current: false,
       schedule : false
     },
 
 
     // Grid style
     grid : {
-      current : 0,
+      current : 3,
 
       schemes : [
       {
@@ -93,8 +96,8 @@ import Stats from 'stats.js';
       schemes : [
       // { columns : 100, rows : 48, cellSize : 8 },
       {
-        columns : 180,
-        rows : 86,
+        columns : window.innerWidth / 5,
+        rows : window.innerHeight / 5,
         cellSize : 4
       },
 
@@ -124,7 +127,6 @@ import Stats from 'stats.js';
         trail : ['#B5ECA2'],
         alive : ['#9898FF', '#8585FF', '#7272FF', '#5F5FFF', '#4C4CFF', '#3939FF', '#2626FF', '#1313FF', '#0000FF', '#1313FF', '#2626FF', '#3939FF', '#4C4CFF', '#5F5FFF', '#7272FF', '#8585FF']
       },
-
       {
         dead : '#FFFFFF',
         trail : ['#EE82EE', '#FF0000', '#FF7F00', '#FFFF00', '#008000 ', '#0000FF', '#4B0082'],
@@ -135,7 +137,12 @@ import Stats from 'stats.js';
         dead : '#FFFFFF',
         trail : ['#9898FF', '#8585FF', '#7272FF', '#5F5FFF', '#4C4CFF', '#3939FF', '#2626FF', '#1313FF', '#0000FF', '#1313FF', '#2626FF', '#3939FF', '#4C4CFF', '#5F5FFF', '#7272FF', '#8585FF'],
         alive : ['#000000']
-      }
+      },
+      {
+        dead: '#35478C',
+        trail: ['#4E7AC7'],
+        alive: ['#16193B']
+      },
 
       ]
     },
@@ -187,9 +194,9 @@ import Stats from 'stats.js';
         zoom = 1;
       }
 
-      this.colors.current = colors - 1;
-      this.grid.current = grid - 1;
-      this.zoom.current = zoom - 1;
+      this.colors.current = 3;
+      this.grid.current = 3;
+      this.zoom.current = 0;
 
       this.rows = this.zoom.schemes[this.zoom.current].rows;
       this.columns = this.zoom.schemes[this.zoom.current].columns;
@@ -635,6 +642,7 @@ import Stats from 'stats.js';
 
         // Dynamic canvas size
         this.width = this.width + (this.cellSpace * GOL.columns) + (this.cellSize * GOL.columns);
+        // this.width = window.innerWidth
         this.canvas.setAttribute('width', this.width);
 
         this.height = this.height + (this.cellSpace * GOL.rows) + (this.cellSize * GOL.rows);
