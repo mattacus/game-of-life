@@ -1,10 +1,7 @@
-
-const midX = window.innerWidth / 2;
-const midY = window.innerHeight / 2;
-
-(function () {
-
-  var GOL = {
+  const midX = window.innerWidth / 2;
+  const midY = window.innerHeight / 2;
+  
+  let GOL = {
 
     columns : 0,
     rows : 0,
@@ -1164,8 +1161,9 @@ const midY = window.innerHeight / 2;
   /**
    * Init on 'load' event
    */
-  GOL.helpers.registerEvent(window, 'load', function () {
-    GOL.init();
-  }, false);
+  // GOL.helpers.registerEvent(window, 'load', function () {
+  //   GOL.init();
+  // }, false);
 
-}());
+
+export default GOL;
