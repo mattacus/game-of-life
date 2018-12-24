@@ -131,244 +131,244 @@
     },
 
 
-    /**
-         * On Load Event
-         */
-    init : function() {
-      try {
-        this.listLife.init();   // Reset/init algorithm
-        this.loadConfig();      // Load config from URL (autoplay, colors, zoom, ...)
-        this.loadState();       // Load state from URL
-        this.keepDOMElements(); // Keep DOM References (getElementsById)
-        this.canvas.init();     // Init canvas GUI
-        this.registerEvents();  // Register event handlers
+    // /**
+    //      * On Load Event
+    //      */
+    // init : function() {
+    //   try {
+    //     this.listLife.init();   // Reset/init algorithm
+    //     this.loadConfig();      // Load config from URL (autoplay, colors, zoom, ...)
+    //     this.loadState();       // Load state from URL
+    //     this.keepDOMElements(); // Keep DOM References (getElementsById)
+    //     this.canvas.init();     // Init canvas GUI
+    //     // this.registerEvents();  // Register event handlers
 
-        this.prepare();
-      } catch (e) {
-        alert("Error: "+e);
-      }
-    },
-
-
-    /**
-         * Load config from URL
-         */
-    loadConfig : function() {
-      var colors, grid, zoom;
-
-      this.autoplay = this.helpers.getUrlParameter('autoplay') === '1' ? true : this.autoplay;
-      this.trail.current = this.helpers.getUrlParameter('trail') === '1' ? true : this.trail.current;
-
-      // Initial color config
-      colors = parseInt(this.helpers.getUrlParameter('colors'), 10);
-      if (isNaN(colors) || colors < 1 || colors > GOL.colors.schemes.length) {
-        colors = 1;
-      }
-
-      // Initial grid config
-      grid = parseInt(this.helpers.getUrlParameter('grid'), 10);
-      if (isNaN(grid) || grid < 1 || grid > GOL.grid.schemes.length) {
-        grid = 1;
-      }
-
-      // Initial zoom config
-      zoom = parseInt(this.helpers.getUrlParameter('zoom'), 10);
-      if (isNaN(zoom) || zoom < 1 || zoom > GOL.zoom.schemes.length) {
-        zoom = 1;
-      }
-
-      this.colors.current = 3;
-      this.grid.current = 3;
-      this.zoom.current = 0;
-
-      this.rows = this.zoom.schemes[this.zoom.current].rows;
-      this.columns = this.zoom.schemes[this.zoom.current].columns;
-    },
+    //     this.prepare();
+    //   } catch (e) {
+    //     console.log("Error: "+e);
+    //   }
+    // },
 
 
-    /**
-         * Load world state from URL parameter
-         */
-    loadState : function() {
-      var state, i, j, y, s = this.helpers.getUrlParameter('s');
+    // /**
+    //      * Load config from URL
+    //      */
+    // loadConfig : function() {
+    //   var colors, grid, zoom;
 
-      if ( s === 'random') {
-        this.randomState();
-      } else {
-        if (s == undefined) {
-          s = this.initialState;
-        }
+    //   this.autoplay = this.helpers.getUrlParameter('autoplay') === '1' ? true : this.autoplay;
+    //   this.trail.current = this.helpers.getUrlParameter('trail') === '1' ? true : this.trail.current;
 
-        state = JSON.parse(decodeURI(s));
+    //   // Initial color config
+    //   colors = parseInt(this.helpers.getUrlParameter('colors'), 10);
+    //   if (isNaN(colors) || colors < 1 || colors > GOL.colors.schemes.length) {
+    //     colors = 1;
+    //   }
 
-        for (i = 0; i < state.length; i++) {
-          for (y in state[i]) {
-            for (j = 0 ; j < state[i][y].length ; j++) {
-              this.listLife.addCell(state[i][y][j], parseInt(y, 10), this.listLife.actualState);
-            }
-          }
-        }
-      }
-    },
+    //   // Initial grid config
+    //   grid = parseInt(this.helpers.getUrlParameter('grid'), 10);
+    //   if (isNaN(grid) || grid < 1 || grid > GOL.grid.schemes.length) {
+    //     grid = 1;
+    //   }
 
+    //   // Initial zoom config
+    //   zoom = parseInt(this.helpers.getUrlParameter('zoom'), 10);
+    //   if (isNaN(zoom) || zoom < 1 || zoom > GOL.zoom.schemes.length) {
+    //     zoom = 1;
+    //   }
 
-    /**
-     * Create a random pattern
-     */
-    randomState : function() {
-      var i, liveCells = (this.rows * this.columns) * 0.12;
+    //   this.colors.current = 3;
+    //   this.grid.current = 3;
+    //   this.zoom.current = 0;
 
-      for (i = 0; i < liveCells; i++) {
-        this.listLife.addCell(this.helpers.random(0, this.columns - 1), this.helpers.random(0, this.rows - 1), this.listLife.actualState);
-      }
-
-      this.listLife.nextGeneration();
-    },
+    //   this.rows = this.zoom.schemes[this.zoom.current].rows;
+    //   this.columns = this.zoom.schemes[this.zoom.current].columns;
+    // },
 
 
-    /**
-     * Clean up actual state and prepare a new run
-     */
-    cleanUp : function() {
-      this.listLife.init(); // Reset/init algorithm
-      this.prepare();
-    },
+    // /**
+    //      * Load world state from URL parameter
+    //      */
+    // loadState : function() {
+    //   var state, i, j, y, s = this.helpers.getUrlParameter('s');
+
+    //   if ( s === 'random') {
+    //     this.randomState();
+    //   } else {
+    //     if (s == undefined) {
+    //       s = this.initialState;
+    //     }
+
+    //     state = JSON.parse(decodeURI(s));
+
+    //     for (i = 0; i < state.length; i++) {
+    //       for (y in state[i]) {
+    //         for (j = 0 ; j < state[i][y].length ; j++) {
+    //           this.listLife.addCell(state[i][y][j], parseInt(y, 10), this.listLife.actualState);
+    //         }
+    //       }
+    //     }
+    //   }
+    // },
 
 
-    /**
-     * Prepare DOM elements and Canvas for a new run
-     */
-    prepare : function() {
-      this.generation = this.times.algorithm = this.times.gui = 0;
-      this.mouseDown = this.clear.schedule = false;
+    // /**
+    //  * Create a random pattern
+    //  */
+    // randomState : function() {
+    //   var i, liveCells = (this.rows * this.columns) * 0.12;
 
-      this.element.generation.innerHTML = '0';
-      this.element.livecells.innerHTML = '0';
-      this.element.steptime.innerHTML = '0 / 0 (0 / 0)';
+    //   for (i = 0; i < liveCells; i++) {
+    //     this.listLife.addCell(this.helpers.random(0, this.columns - 1), this.helpers.random(0, this.rows - 1), this.listLife.actualState);
+    //   }
 
-      this.canvas.clearWorld(); // Reset GUI
-      this.canvas.drawWorld(); // Draw State
-
-      if (this.autoplay) { // Next Flow
-        this.autoplay = false;
-        this.handlers.buttons.run();
-      }
-    },
+    //   this.listLife.nextGeneration();
+    // },
 
 
-    /**
-     * keepDOMElements
-     * Save DOM references for this session (one time execution)
-     */
-    keepDOMElements : function() {
-      this.element.generation = document.getElementById('generation');
-      this.element.steptime = document.getElementById('steptime');
-      this.element.livecells = document.getElementById('livecells');
-      this.element.messages.layout = document.getElementById('layoutMessages');
-      this.element.hint = document.getElementById('hint');
-    },
+    // /**
+    //  * Clean up actual state and prepare a new run
+    //  */
+    // cleanUp : function() {
+    //   this.listLife.init(); // Reset/init algorithm
+    //   this.prepare();
+    // },
+
+
+    // /**
+    //  * Prepare DOM elements and Canvas for a new run
+    //  */
+    // prepare : function() {
+    //   this.generation = this.times.algorithm = this.times.gui = 0;
+    //   this.mouseDown = this.clear.schedule = false;
+
+    //   this.element.generation.innerHTML = '0';
+    //   this.element.livecells.innerHTML = '0';
+    //   this.element.steptime.innerHTML = '0 / 0 (0 / 0)';
+
+    //   this.canvas.clearWorld(); // Reset GUI
+    //   this.canvas.drawWorld(); // Draw State
+
+    //   if (this.autoplay) { // Next Flow
+    //     this.autoplay = false;
+    //     // this.handlers.buttons.run();
+    //   }
+    // },
+
+
+    // /**
+    //  * keepDOMElements
+    //  * Save DOM references for this session (one time execution)
+    //  */
+    // keepDOMElements : function() {
+    //   this.element.generation = document.getElementById('generation');
+    //   this.element.steptime = document.getElementById('steptime');
+    //   this.element.livecells = document.getElementById('livecells');
+    //   this.element.messages.layout = document.getElementById('layoutMessages');
+    //   this.element.hint = document.getElementById('hint');
+    // },
 
 
     /**
      * registerEvents
      * Register event handlers for this session (one time execution)
      */
-    registerEvents : function() {
+    // registerEvents : function() {
 
-      // Keyboard Events
-      this.helpers.registerEvent(document.body, 'keyup', this.handlers.keyboard, false);
+    //   // Keyboard Events
+    //   this.helpers.registerEvent(document.body, 'keyup', this.handlers.keyboard, false);
 
-      // Controls
-      this.helpers.registerEvent(document.getElementById('buttonRun'), 'click', this.handlers.buttons.run, false);
-      this.helpers.registerEvent(document.getElementById('buttonStep'), 'click', this.handlers.buttons.step, false);
-      this.helpers.registerEvent(document.getElementById('buttonClear'), 'click', this.handlers.buttons.clear, false);
-      this.helpers.registerEvent(document.getElementById('buttonExport'), 'click', this.handlers.buttons.export_, false);
+    //   // Controls
+    //   this.helpers.registerEvent(document.getElementById('buttonRun'), 'click', this.handlers.buttons.run, false);
+    //   this.helpers.registerEvent(document.getElementById('buttonStep'), 'click', this.handlers.buttons.step, false);
+    //   this.helpers.registerEvent(document.getElementById('buttonClear'), 'click', this.handlers.buttons.clear, false);
+    //   this.helpers.registerEvent(document.getElementById('buttonExport'), 'click', this.handlers.buttons.export_, false);
 
-      // Layout
-      this.helpers.registerEvent(document.getElementById('buttonTrail'), 'click', this.handlers.buttons.trail, false);
-      this.helpers.registerEvent(document.getElementById('buttonGrid'), 'click', this.handlers.buttons.grid, false);
-      this.helpers.registerEvent(document.getElementById('buttonColors'), 'click', this.handlers.buttons.colors, false);
-    },
-
-
-    /**
-     * Run Next Step
-     */
-    nextStep : function() {
-      var i, x, y, r, liveCellNumber, algorithmTime, guiTime;
-
-      // Algorithm run
-
-      algorithmTime = (new Date());
-
-      liveCellNumber = GOL.listLife.nextGeneration();
-
-      algorithmTime = (new Date()) - algorithmTime;
+    //   // Layout
+    //   this.helpers.registerEvent(document.getElementById('buttonTrail'), 'click', this.handlers.buttons.trail, false);
+    //   this.helpers.registerEvent(document.getElementById('buttonGrid'), 'click', this.handlers.buttons.grid, false);
+    //   this.helpers.registerEvent(document.getElementById('buttonColors'), 'click', this.handlers.buttons.colors, false);
+    // },
 
 
-      // Canvas run
+    // /**
+    //  * Run Next Step
+    //  */
+    // nextStep : function() {
+    //   var i, x, y, r, liveCellNumber, algorithmTime, guiTime;
 
-      guiTime = (new Date());
+    //   // Algorithm run
 
-      for (i = 0; i < GOL.listLife.redrawList.length; i++) {
-        x = GOL.listLife.redrawList[i][0];
-        y = GOL.listLife.redrawList[i][1];
+    //   algorithmTime = (new Date());
 
-        if (GOL.listLife.redrawList[i][2] === 1) {
-          GOL.canvas.changeCelltoAlive(x, y);
-        } else if (GOL.listLife.redrawList[i][2] === 2) {
-          GOL.canvas.keepCellAlive(x, y);
-        } else {
-          GOL.canvas.changeCelltoDead(x, y);
-        }
-      }
+    //   liveCellNumber = GOL.listLife.nextGeneration();
 
-      guiTime = (new Date()) - guiTime;
+    //   algorithmTime = (new Date()) - algorithmTime;
 
-      // Pos-run updates
 
-      // Clear Trail
-      if (GOL.trail.schedule) {
-        GOL.trail.schedule = false;
-        GOL.canvas.drawWorld();
-      }
+    //   // Canvas run
 
-      // Change Grid
-      if (GOL.grid.schedule) {
-        GOL.grid.schedule = false;
-        GOL.canvas.drawWorld();
-      }
+    //   guiTime = (new Date());
 
-      // Change Colors
-      if (GOL.colors.schedule) {
-        GOL.colors.schedule = false;
-        GOL.canvas.drawWorld();
-      }
+    //   for (i = 0; i < GOL.listLife.redrawList.length; i++) {
+    //     x = GOL.listLife.redrawList[i][0];
+    //     y = GOL.listLife.redrawList[i][1];
 
-      // Running Information
-      GOL.generation++;
-      GOL.element.generation.innerHTML = GOL.generation;
-      GOL.element.livecells.innerHTML = liveCellNumber;
+    //     if (GOL.listLife.redrawList[i][2] === 1) {
+    //       GOL.canvas.changeCelltoAlive(x, y);
+    //     } else if (GOL.listLife.redrawList[i][2] === 2) {
+    //       GOL.canvas.keepCellAlive(x, y);
+    //     } else {
+    //       GOL.canvas.changeCelltoDead(x, y);
+    //     }
+    //   }
 
-      r = 1.0/GOL.generation;
-      GOL.times.algorithm = (GOL.times.algorithm * (1 - r)) + (algorithmTime * r);
-      GOL.times.gui = (GOL.times.gui * (1 - r)) + (guiTime * r);
-      GOL.element.steptime.innerHTML = algorithmTime + ' / '+guiTime+' ('+Math.round(GOL.times.algorithm) + ' / '+Math.round(GOL.times.gui)+')';
+    //   guiTime = (new Date()) - guiTime;
 
-      // Flow Control
-      if (GOL.running) {
-        function animateFrame() {
-          window.requestAnimationFrame(GOL.nextStep);
-        }
+    //   // Pos-run updates
 
-        if (GOL.waitTime > 0) setTimeout(function() { animateFrame() }, GOL.waitTime);
-        else animateFrame();
-      } else {
-        if (GOL.clear.schedule) {
-          GOL.cleanUp();
-        }
-      }
-    },
+    //   // Clear Trail
+    //   if (GOL.trail.schedule) {
+    //     GOL.trail.schedule = false;
+    //     GOL.canvas.drawWorld();
+    //   }
+
+    //   // Change Grid
+    //   if (GOL.grid.schedule) {
+    //     GOL.grid.schedule = false;
+    //     GOL.canvas.drawWorld();
+    //   }
+
+    //   // Change Colors
+    //   if (GOL.colors.schedule) {
+    //     GOL.colors.schedule = false;
+    //     GOL.canvas.drawWorld();
+    //   }
+
+    //   // Running Information
+    //   GOL.generation++;
+    //   GOL.element.generation.innerHTML = GOL.generation;
+    //   GOL.element.livecells.innerHTML = liveCellNumber;
+
+    //   r = 1.0/GOL.generation;
+    //   GOL.times.algorithm = (GOL.times.algorithm * (1 - r)) + (algorithmTime * r);
+    //   GOL.times.gui = (GOL.times.gui * (1 - r)) + (guiTime * r);
+    //   GOL.element.steptime.innerHTML = algorithmTime + ' / '+guiTime+' ('+Math.round(GOL.times.algorithm) + ' / '+Math.round(GOL.times.gui)+')';
+
+    //   // Flow Control
+    //   if (GOL.running) {
+    //     function animateFrame() {
+    //       window.requestAnimationFrame(GOL.nextStep);
+    //     }
+
+    //     if (GOL.waitTime > 0) setTimeout(function() { animateFrame() }, GOL.waitTime);
+    //     else animateFrame();
+    //   } else {
+    //     if (GOL.clear.schedule) {
+    //       GOL.cleanUp();
+    //     }
+    //   }
+    // },
 
 
     /** ****************************************************************************************************************************
@@ -376,183 +376,183 @@
      */
     handlers : {
 
-      mouseDown : false,
-      lastX : 0,
-      lastY : 0,
+      // mouseDown : false,
+      // lastX : 0,
+      // lastY : 0,
 
 
-      /**
-       *
-       */
-      canvasMouseDown : function(event) {
-        var position = GOL.helpers.mousePosition(event);
-        GOL.canvas.switchCell(position[0], position[1]);
-        GOL.handlers.lastX = position[0];
-        GOL.handlers.lastY = position[1];
-        GOL.handlers.mouseDown = true;
-      },
+      // /**
+      //  *
+      //  */
+      // canvasMouseDown : function(event) {
+      //   var position = GOL.helpers.mousePosition(event);
+      //   GOL.canvas.switchCell(position[0], position[1]);
+      //   GOL.handlers.lastX = position[0];
+      //   GOL.handlers.lastY = position[1];
+      //   GOL.handlers.mouseDown = true;
+      // },
 
 
-      /**
-       *
-       */
-      canvasMouseUp : function() {
-        GOL.handlers.mouseDown = false;
-      },
+      // /**
+      //  *
+      //  */
+      // canvasMouseUp : function() {
+      //   GOL.handlers.mouseDown = false;
+      // },
 
 
-      /**
-       *
-       */
-      canvasMouseMove : function(event) {
-        if (GOL.handlers.mouseDown) {
-          var position = GOL.helpers.mousePosition(event);
-          if ((position[0] !== GOL.handlers.lastX) || (position[1] !== GOL.handlers.lastY)) {
-            GOL.canvas.switchCell(position[0], position[1]);
-            GOL.handlers.lastX = position[0];
-            GOL.handlers.lastY = position[1];
-          }
-        }
-      },
+      // /**
+      //  *
+      //  */
+      // canvasMouseMove : function(event) {
+      //   if (GOL.handlers.mouseDown) {
+      //     var position = GOL.helpers.mousePosition(event);
+      //     if ((position[0] !== GOL.handlers.lastX) || (position[1] !== GOL.handlers.lastY)) {
+      //       GOL.canvas.switchCell(position[0], position[1]);
+      //       GOL.handlers.lastX = position[0];
+      //       GOL.handlers.lastY = position[1];
+      //     }
+      //   }
+      // },
 
 
-      /**
-       *
-       */
-      keyboard : function(e) {
-        var event = e;
-        if (!event) {
-          event = window.event;
-        }
+      // /**
+      //  *
+      //  */
+      // keyboard : function(e) {
+      //   var event = e;
+      //   if (!event) {
+      //     event = window.event;
+      //   }
 
-        if (event.keyCode === 67) { // Key: C
-          GOL.handlers.buttons.clear();
-        } else if (event.keyCode === 82 ) { // Key: R
-          GOL.handlers.buttons.run();
-        } else if (event.keyCode === 83 ) { // Key: S
-          GOL.handlers.buttons.step();
-        }
-      },
-
-
-      buttons : {
-
-        /**
-         * Button Handler - Run
-         */
-        run : function() {
-          GOL.element.hint.style.display = 'none';
-
-          GOL.running = !GOL.running;
-          if (GOL.running) {
-            GOL.nextStep();
-            document.getElementById('buttonRun').value = 'Stop';
-          } else {
-            document.getElementById('buttonRun').value = 'Run';
-          }
-        },
+      //   if (event.keyCode === 67) { // Key: C
+      //     GOL.handlers.buttons.clear();
+      //   } else if (event.keyCode === 82 ) { // Key: R
+      //     GOL.handlers.buttons.run();
+      //   } else if (event.keyCode === 83 ) { // Key: S
+      //     GOL.handlers.buttons.step();
+      //   }
+      // },
 
 
-        /**
-         * Button Handler - Next Step - One Step only
-         */
-        step : function() {
-          if (!GOL.running) {
-            GOL.nextStep();
-          }
-        },
+      // buttons : {
+
+      //   // /**
+      //   //  * Button Handler - Run
+      //   //  */
+      //   run : function() {
+      //     GOL.element.hint.style.display = 'none';
+
+      //     GOL.running = !GOL.running;
+      //     if (GOL.running) {
+      //       GOL.nextStep();
+      //       document.getElementById('buttonRun').value = 'Stop';
+      //     } else {
+      //       document.getElementById('buttonRun').value = 'Run';
+      //     }
+      //   },
 
 
-        /**
-         * Button Handler - Clear World
-         */
-        clear : function() {
-          if (GOL.running) {
-            GOL.clear.schedule = true;
-            GOL.running = false;
-            document.getElementById('buttonRun').value = 'Run';
-          } else {
-            GOL.cleanUp();
-          }
-        },
+      //   /**
+      //    * Button Handler - Next Step - One Step only
+      //    */
+      //   step : function() {
+      //     if (!GOL.running) {
+      //       GOL.nextStep();
+      //     }
+      //   },
 
 
-        /**
-         * Button Handler - Remove/Add Trail
-         */
-        trail : function() {
-          GOL.element.messages.layout.innerHTML = GOL.trail.current ? 'Trail is Off' : 'Trail is On';
-          GOL.trail.current = !GOL.trail.current;
-          if (GOL.running) {
-            GOL.trail.schedule = true;
-          } else {
-            GOL.canvas.drawWorld();
-          }
-        },
+      //   /**
+      //    * Button Handler - Clear World
+      //    */
+      //   clear : function() {
+      //     if (GOL.running) {
+      //       GOL.clear.schedule = true;
+      //       GOL.running = false;
+      //       document.getElementById('buttonRun').value = 'Run';
+      //     } else {
+      //       GOL.cleanUp();
+      //     }
+      //   },
 
 
-        /**
-         *
-         */
-        colors : function() {
-          GOL.colors.current = (GOL.colors.current + 1) % GOL.colors.schemes.length;
-          GOL.element.messages.layout.innerHTML = 'Color Scheme #' + (GOL.colors.current + 1);
-          if (GOL.running) {
-            GOL.colors.schedule = true; // Delay redraw
-          } else {
-            GOL.canvas.drawWorld(); // Force complete redraw
-          }
-        },
+      //   /**
+      //    * Button Handler - Remove/Add Trail
+      //    */
+      //   trail : function() {
+      //     GOL.element.messages.layout.innerHTML = GOL.trail.current ? 'Trail is Off' : 'Trail is On';
+      //     GOL.trail.current = !GOL.trail.current;
+      //     if (GOL.running) {
+      //       GOL.trail.schedule = true;
+      //     } else {
+      //       GOL.canvas.drawWorld();
+      //     }
+      //   },
 
 
-        /**
-         *
-         */
-        grid : function() {
-          GOL.grid.current = (GOL.grid.current + 1) % GOL.grid.schemes.length;
-          GOL.element.messages.layout.innerHTML = 'Grid Scheme #' + (GOL.grid.current + 1);
-          if (GOL.running) {
-            GOL.grid.schedule = true; // Delay redraw
-          } else {
-            GOL.canvas.drawWorld(); // Force complete redraw
-          }
-        },
+      //   /**
+      //    *
+      //    */
+      //   colors : function() {
+      //     GOL.colors.current = (GOL.colors.current + 1) % GOL.colors.schemes.length;
+      //     GOL.element.messages.layout.innerHTML = 'Color Scheme #' + (GOL.colors.current + 1);
+      //     if (GOL.running) {
+      //       GOL.colors.schedule = true; // Delay redraw
+      //     } else {
+      //       GOL.canvas.drawWorld(); // Force complete redraw
+      //     }
+      //   },
 
 
-        /**
-         * Button Handler - Export State
-         */
-        export_ : function() {
-          var i, j, url = '', cellState = '', params = '';
+      //   /**
+      //    *
+      //    */
+      //   grid : function() {
+      //     GOL.grid.current = (GOL.grid.current + 1) % GOL.grid.schemes.length;
+      //     GOL.element.messages.layout.innerHTML = 'Grid Scheme #' + (GOL.grid.current + 1);
+      //     if (GOL.running) {
+      //       GOL.grid.schedule = true; // Delay redraw
+      //     } else {
+      //       GOL.canvas.drawWorld(); // Force complete redraw
+      //     }
+      //   },
 
-          for (i = 0; i < GOL.listLife.actualState.length; i++) {
-            cellState += '{"'+GOL.listLife.actualState[i][0]+'":[';
-            //cellState += '{"one":[';
-            for (j = 1; j < GOL.listLife.actualState[i].length; j++) {
-              cellState += GOL.listLife.actualState[i][j]+',';
-            }
-            cellState = cellState.substring(0, cellState.length - 1) + ']},';
-          }
 
-          cellState = cellState.substring(0, cellState.length - 1) + '';
+      //   /**
+      //    * Button Handler - Export State
+      //    */
+      //   export_ : function() {
+      //     var i, j, url = '', cellState = '', params = '';
 
-          if (cellState.length !== 0) {
-            url = (window.location.href.indexOf('?') === -1) ? window.location.href : window.location.href.slice(0, window.location.href.indexOf('?'));
+      //     for (i = 0; i < GOL.listLife.actualState.length; i++) {
+      //       cellState += '{"'+GOL.listLife.actualState[i][0]+'":[';
+      //       //cellState += '{"one":[';
+      //       for (j = 1; j < GOL.listLife.actualState[i].length; j++) {
+      //         cellState += GOL.listLife.actualState[i][j]+',';
+      //       }
+      //       cellState = cellState.substring(0, cellState.length - 1) + ']},';
+      //     }
 
-            params = '?autoplay=0' +
-            '&trail=' + (GOL.trail.current ? '1' : '0') +
-            '&grid=' + (GOL.grid.current + 1) +
-            '&colors=' + (GOL.colors.current + 1) +
-            '&zoom=' + (GOL.zoom.current + 1) +
-            '&s=['+ cellState +']';
+      //     cellState = cellState.substring(0, cellState.length - 1) + '';
 
-            document.getElementById('exportUrlLink').href = params;
-            document.getElementById('exportTinyUrlLink').href = 'http://tinyurl.com/api-create.php?url='+ url + params;
-            document.getElementById('exportUrl').style.display = 'inline';
-          }
-        }
+      //     if (cellState.length !== 0) {
+      //       url = (window.location.href.indexOf('?') === -1) ? window.location.href : window.location.href.slice(0, window.location.href.indexOf('?'));
 
-      }
+      //       params = '?autoplay=0' +
+      //       '&trail=' + (GOL.trail.current ? '1' : '0') +
+      //       '&grid=' + (GOL.grid.current + 1) +
+      //       '&colors=' + (GOL.colors.current + 1) +
+      //       '&zoom=' + (GOL.zoom.current + 1) +
+      //       '&s=['+ cellState +']';
+
+      //       document.getElementById('exportUrlLink').href = params;
+      //       document.getElementById('exportTinyUrlLink').href = 'http://tinyurl.com/api-create.php?url='+ url + params;
+      //       document.getElementById('exportUrl').style.display = 'inline';
+      //     }
+      //   }
+
+      // }
 
     },
 
@@ -581,9 +581,9 @@
         this.cellSize = GOL.zoom.schemes[GOL.zoom.current].cellSize;
         this.cellSpace = 1;
 
-        GOL.helpers.registerEvent(this.canvas, 'mousedown', GOL.handlers.canvasMouseDown, false);
-        GOL.helpers.registerEvent(document, 'mouseup', GOL.handlers.canvasMouseUp, false);
-        GOL.helpers.registerEvent(this.canvas, 'mousemove', GOL.handlers.canvasMouseMove, false);
+        // GOL.helpers.registerEvent(this.canvas, 'mousedown', GOL.handlers.canvasMouseDown, false);
+        // GOL.helpers.registerEvent(document, 'mouseup', GOL.handlers.canvasMouseUp, false);
+        // GOL.helpers.registerEvent(this.canvas, 'mousemove', GOL.handlers.canvasMouseMove, false);
 
         this.clearWorld();
       },
@@ -1072,87 +1072,87 @@
      *
      */
     helpers : {
-      urlParameters : null, // Cache
+      // urlParameters : null, // Cache
 
 
-      /**
-       * Return a random integer from [min, max]
-       */
-      random : function(min, max) {
-        return min <= max ? min + Math.round(Math.random() * (max - min)) : null;
-      },
+      // /**
+      //  * Return a random integer from [min, max]
+      //  */
+      // random : function(min, max) {
+      //   return min <= max ? min + Math.round(Math.random() * (max - min)) : null;
+      // },
 
 
-      /**
-       * Get URL Parameters
-       */
-      getUrlParameter : function(name) {
-        if (this.urlParameters === null) { // Cache miss
-          var hash, hashes, i;
+      // /**
+      //  * Get URL Parameters
+      //  */
+      // getUrlParameter : function(name) {
+      //   if (this.urlParameters === null) { // Cache miss
+      //     var hash, hashes, i;
 
-          this.urlParameters = [];
-          hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+      //     this.urlParameters = [];
+      //     hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
 
-          for (i = 0; i < hashes.length; i++) {
-            hash = hashes[i].split('=');
-            this.urlParameters.push(hash[0]);
-            this.urlParameters[hash[0]] = hash[1];
-          }
-        }
+      //     for (i = 0; i < hashes.length; i++) {
+      //       hash = hashes[i].split('=');
+      //       this.urlParameters.push(hash[0]);
+      //       this.urlParameters[hash[0]] = hash[1];
+      //     }
+      //   }
 
-        return this.urlParameters[name];
-      },
+      //   return this.urlParameters[name];
+      // },
 
 
-      /**
-       * Register Event
-       */
-      registerEvent : function (element, event, handler, capture) {
-        if (/msie/i.test(navigator.userAgent)) {
-          element.attachEvent('on' + event, handler);
-        } else {
-          element.addEventListener(event, handler, capture);
-        }
-      },
+      // /**
+      //  * Register Event
+      //  */
+      // registerEvent : function (element, event, handler, capture) {
+      //   if (/msie/i.test(navigator.userAgent)) {
+      //     element.attachEvent('on' + event, handler);
+      //   } else {
+      //     element.addEventListener(event, handler, capture);
+      //   }
+      // },
 
 
       /**
        *
        */
-      mousePosition : function (e) {
-        // http://www.malleus.de/FAQ/getImgMousePos.html
-        // http://www.quirksmode.org/js/events_properties.html#position
-        var event, x, y, domObject, posx = 0, posy = 0, top = 0, left = 0, cellSize = GOL.zoom.schemes[GOL.zoom.current].cellSize + 1;
+      // mousePosition : function (e) {
+      //   // http://www.malleus.de/FAQ/getImgMousePos.html
+      //   // http://www.quirksmode.org/js/events_properties.html#position
+      //   var event, x, y, domObject, posx = 0, posy = 0, top = 0, left = 0, cellSize = GOL.zoom.schemes[GOL.zoom.current].cellSize + 1;
 
-        event = e;
-        if (!event) {
-          event = window.event;
-        }
+      //   event = e;
+      //   if (!event) {
+      //     event = window.event;
+      //   }
 
-        if (event.pageX || event.pageY) 	{
-          posx = event.pageX;
-          posy = event.pageY;
-        } else if (event.clientX || event.clientY) 	{
-          posx = event.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
-          posy = event.clientY + document.body.scrollTop + document.documentElement.scrollTop;
-        }
+      //   if (event.pageX || event.pageY) 	{
+      //     posx = event.pageX;
+      //     posy = event.pageY;
+      //   } else if (event.clientX || event.clientY) 	{
+      //     posx = event.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
+      //     posy = event.clientY + document.body.scrollTop + document.documentElement.scrollTop;
+      //   }
 
-        domObject = event.target || event.srcElement;
+      //   domObject = event.target || event.srcElement;
 
-        while ( domObject.offsetParent ) {
-          left += domObject.offsetLeft;
-          top += domObject.offsetTop;
-          domObject = domObject.offsetParent;
-        }
+      //   while ( domObject.offsetParent ) {
+      //     left += domObject.offsetLeft;
+      //     top += domObject.offsetTop;
+      //     domObject = domObject.offsetParent;
+      //   }
 
-        domObject.pageTop = top;
-        domObject.pageLeft = left;
+      //   domObject.pageTop = top;
+      //   domObject.pageLeft = left;
 
-        x = Math.ceil(((posx - domObject.pageLeft)/cellSize) - 1);
-        y = Math.ceil(((posy - domObject.pageTop)/cellSize) - 1);
+      //   x = Math.ceil(((posx - domObject.pageLeft)/cellSize) - 1);
+      //   y = Math.ceil(((posy - domObject.pageTop)/cellSize) - 1);
 
-        return [x, y];
-      }
+      //   return [x, y];
+      // }
     }
 
   };
