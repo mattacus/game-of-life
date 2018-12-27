@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import ConwayRender from './ConwayRender';
+import ConwayControls from './ConwayControls';
 
 class ConwayAnimate extends Component {
 
@@ -9,6 +10,21 @@ class ConwayAnimate extends Component {
       mouseDown: false,
       lastX: 0,
       lastY: 0,
+      age: undefined,
+      rAF: undefined,
+      cellChange: {
+        i: undefined,
+        j: undefined,
+        alive: undefined,
+      },
+      status: {
+        generation: null,
+        steptime: null,
+        livecells: null,
+        messages: {
+          layout: null
+        }
+      },
     }
   }
 
@@ -17,10 +33,43 @@ class ConwayAnimate extends Component {
   //
 
   /**
+     * Prepare DOM elements and Canvas for a new run
+     */
+  prepare() {
+    let { GOL } = this.props;
+    let { status } = this.state;
+    GOL.generation = GOL.times.algorithm = GOL.times.gui = 0;
+    this.setState({ mouseDown: false});
+    GOL.clear.schedule = false;
+
+    status.generation = '0';
+    status.livecells = '0';
+    status.steptime = '0 / 0 (0 / 0)';
+    this.setState({status});
+
+    this.clearWorld(); // Reset GUI
+
+    if (GOL.autoplay) { // Next Flow
+      GOL.autoplay = false;
+      // this.runHandler();
+    }
+  }
+
+  /**
+   * Clean up actual state and prepare a new run
+   */
+  cleanUp = () => {
+    let { listLife } = this.props;
+    listLife.init(); // Reset/init algorithm
+    this.prepare();
+  }
+
+  /**
    * Run Next Step
    */
   nextStep = () => {
-    let { GOL, cleanUp } = this.props;
+    let { GOL, conwayConfig, listLife } = this.props;
+    let { status } = this.state;
 
     var i, x, y, r, liveCellNumber, algorithmTime, guiTime;
 
@@ -28,7 +77,7 @@ class ConwayAnimate extends Component {
 
     algorithmTime = (new Date());
 
-    liveCellNumber = GOL.listLife.nextGeneration();
+    liveCellNumber = listLife.nextGeneration();
 
     algorithmTime = (new Date()) - algorithmTime;
 
@@ -37,16 +86,16 @@ class ConwayAnimate extends Component {
 
     guiTime = (new Date());
 
-    for (i = 0; i < GOL.listLife.redrawList.length; i++) {
-      x = GOL.listLife.redrawList[i][0];
-      y = GOL.listLife.redrawList[i][1];
+    for (i = 0; i < listLife.redrawList.length; i++) {
+      x = listLife.redrawList[i][0];
+      y = listLife.redrawList[i][1];
 
-      if (GOL.listLife.redrawList[i][2] === 1) {
-        GOL.canvas.changeCelltoAlive(x, y);
-      } else if (GOL.listLife.redrawList[i][2] === 2) {
-        GOL.canvas.keepCellAlive(x, y);
+      if (listLife.redrawList[i][2] === 1) {
+        this.changeCelltoAlive(x, y);
+      } else if (listLife.redrawList[i][2] === 2) {
+        this.keepCellAlive(x, y);
       } else {
-        GOL.canvas.changeCelltoDead(x, y);
+        this.changeCelltoDead(x, y);
       }
     }
 
@@ -55,45 +104,127 @@ class ConwayAnimate extends Component {
     // Pos-run updates
 
     // Clear Trail
-    if (GOL.trail.schedule) {
-      GOL.trail.schedule = false;
-      GOL.canvas.drawWorld();
+    if (conwayConfig.trail.schedule) {
+      conwayConfig.trail.schedule = false;
+      this.props.updateConfig(conwayConfig);
     }
 
     // Change Grid
-    if (GOL.grid.schedule) {
-      GOL.grid.schedule = false;
-      GOL.canvas.drawWorld();
+    if (conwayConfig.grid.schedule) {
+      conwayConfig.grid.schedule = false;
+      this.props.updateConfig(conwayConfig);      
     }
 
     // Change Colors
-    if (GOL.colors.schedule) {
-      GOL.colors.schedule = false;
-      GOL.canvas.drawWorld();
+    if (conwayConfig.colors.schedule) {
+      conwayConfig.colors.schedule = false;
+      this.props.updateConfig(conwayConfig);      
     }
 
     // Running Information
     GOL.generation++;
-    GOL.element.generation.innerHTML = GOL.generation;
-    GOL.element.livecells.innerHTML = liveCellNumber;
+    status.generation = GOL.generation;
+    status.livecells = liveCellNumber;
 
     r = 1.0 / GOL.generation;
     GOL.times.algorithm = (GOL.times.algorithm * (1 - r)) + (algorithmTime * r);
     GOL.times.gui = (GOL.times.gui * (1 - r)) + (guiTime * r);
-    GOL.element.steptime.innerHTML = algorithmTime + ' / ' + guiTime + ' (' + Math.round(GOL.times.algorithm) + ' / ' + Math.round(GOL.times.gui) + ')';
+    status.steptime = algorithmTime + ' / ' + guiTime + ' (' + Math.round(GOL.times.algorithm) + ' / ' + Math.round(GOL.times.gui) + ')';
+
+    this.setState({ status });
 
     // Flow Control
     if (GOL.running) {
       function animateFrame() {
-        window.requestAnimationFrame(this.nextStep);
+        this.rAF = window.requestAnimationFrame(this.nextStep);
       }
 
       if (GOL.waitTime > 0) setTimeout(() => { animateFrame.call(this) }, GOL.waitTime);
-      else animateFrame();
+      else animateFrame.call(this);
     } else {
       if (GOL.clear.schedule) {
-        cleanUp();
+        this.cleanUp();
       }
+    }
+  }
+
+  /**
+   * clearWorld
+   */
+  clearWorld = () => {
+    let { GOL } = this.props;
+    var i, j;
+
+    // Init ages (Canvas reference)
+    let age = [];
+    for (i = 0; i < GOL.columns; i++) {
+      age[i] = [];
+      for (j = 0; j < GOL.rows; j++) {
+        age[i][j] = 0; // Dead
+      }
+    }
+
+    this.setState({ age })
+  }
+
+  /**
+  * switchCell
+  */
+  switchCell(i, j) {
+    let { listLife } = this.props;
+    if (listLife.isAlive(i, j)) {
+      this.changeCelltoDead(i, j);
+      listLife.removeCell(i, j, listLife.actualState);
+    } else {
+      this.changeCelltoAlive(i, j);
+      listLife.addCell(i, j, listLife.actualState);
+    }
+  }
+
+  /**
+   * keepCellAlive
+   */
+  keepCellAlive(i, j) {
+    let { GOL } = this.props;
+    if (i >= 0 && i < GOL.columns && j >= 0 && j < GOL.rows) {
+      let { age } = this.state;
+      age[i][j]++;
+      this.setState({ 
+        age,
+        cellChange: { i, j, alive: true }
+      });
+    }
+  }
+
+
+  /**
+   * changeCelltoAlive
+   */
+  changeCelltoAlive(i, j) {
+    let { GOL } = this.props;
+    if (i >= 0 && i < GOL.columns && j >= 0 && j < GOL.rows) {
+      let { age } = this.state;
+      age[i][j] = 1;
+      this.setState({
+        age,
+        cellChange: { i, j, alive: true }
+      });
+    }
+  }
+
+
+  /**
+   * changeCelltoDead
+   */
+  changeCelltoDead(i, j) {
+    let { GOL } = this.props;
+    if (i >= 0 && i < GOL.columns && j >= 0 && j < GOL.rows) {
+      let { age } = this.state;
+      age[i][j] = -age[i][j]; // Keep trail
+      this.setState({
+        age,
+        cellChange: { i, j, alive: false }
+      });
     }
   }
 
@@ -110,18 +241,17 @@ class ConwayAnimate extends Component {
     if (event.keyCode === 67) { // Key: C
       this.clear();
     } else if (event.keyCode === 82) { // Key: R
-      this.run();
+      this.runHandler();
     } else if (event.keyCode === 83) { // Key: S
-      this.step();
+      this.stepHandler();
     }
   }
 
   /**
   * Button Handler - Run
   */
-  run = () => {
+  runHandler = () => {
     let { GOL } = this.props;
-    GOL.element.hint.style.display = 'none';
 
     GOL.running = !GOL.running;
     if (GOL.running) {
@@ -135,7 +265,7 @@ class ConwayAnimate extends Component {
   /**
   * Button Handler - Next Step - One Step only
   */
-  step = () => {
+  stepHandler = () => {
     let { GOL } = this.props;
     if (!GOL.running) {
       this.nextStep();
@@ -145,42 +275,46 @@ class ConwayAnimate extends Component {
   /**
     * Button Handler - Clear World
   */
-  clear = () => {
+  clearHandler = () => {
     let { GOL } = this.props;
     if (GOL.running) {
       GOL.clear.schedule = true;
       GOL.running = false;
       document.getElementById('buttonRun').value = 'Run';
     } else {
-      GOL.cleanUp();
+      this.cleanUp();
     }
   }
 
   /**
    * Button Handler - Remove/Add Trail
    */
-  trail = () => {
-    let { GOL } = this.props;
-    GOL.element.messages.layout.innerHTML = GOL.trail.current ? 'Trail is Off' : 'Trail is On';
-    GOL.trail.current = !GOL.trail.current;
+  trailHandler = () => {
+    let { GOL, conwayConfig } = this.props;
+    conwayConfig.trail.current = !conwayConfig.trail.current;
+    status.messages.layout = conwayConfig.trail.current ? 'Trail is Off' : 'Trail is On';
+    this.setState({ status });
     if (GOL.running) {
-      GOL.trail.schedule = true;
+      // TODO: fix schedule updating while running 
+      conwayConfig.trail.schedule = true;
     } else {
-      GOL.canvas.drawWorld();
+      this.props.updateConfig(conwayConfig);
     }
   }
 
   /**
    * Button Handler - Colors
    */
-  colors = () => {
-    let { GOL } = this.props;
-    GOL.colors.current = (GOL.colors.current + 1) % GOL.colors.schemes.length;
-    GOL.element.messages.layout.innerHTML = 'Color Scheme #' + (GOL.colors.current + 1);
+  colorsHandler = () => {
+    let { GOL, conwayConfig } = this.props;
+    conwayConfig.colors.current = (conwayConfig.colors.current + 1) % conwayConfig.colors.schemes.length;
+    status.messages.layout = 'Color Scheme #' + (GOL.colors.current + 1);
+    this.setState({ status });
     if (GOL.running) {
-      GOL.colors.schedule = true; // Delay redraw
+      // TODO: fix schedule updating while running
+      conwayConfig.colors.schedule = true; // Delay redraw
     } else {
-      GOL.canvas.drawWorld(); // Force complete redraw
+      this.props.updateConfig(conwayConfig); // Force complete redraw
     }
   }
 
@@ -188,14 +322,16 @@ class ConwayAnimate extends Component {
   /**
    *
    */
-  grid = () => {
-    let { GOL } = this.props;
-    GOL.grid.current = (GOL.grid.current + 1) % GOL.grid.schemes.length;
-    GOL.element.messages.layout.innerHTML = 'Grid Scheme #' + (GOL.grid.current + 1);
+  gridHandler = () => {
+    let { GOL, conwayConfig } = this.props;
+    conwayConfig.grid.current = (conwayConfig.grid.current + 1) % conwayConfig.grid.schemes.length;
+    status.messages.layout = 'Grid Scheme #' + (conwayConfig.grid.current + 1);
+    this.setState({ status });
     if (GOL.running) {
-      GOL.grid.schedule = true; // Delay redraw
+      // TODO: fix schedule updating while running
+      conwayConfig.grid.schedule = true; // Delay redraw
     } else {
-      GOL.canvas.drawWorld(); // Force complete redraw
+      this.props.updateConfig(conwayConfig); // Force complete redraw
     }
   }
 
@@ -203,15 +339,15 @@ class ConwayAnimate extends Component {
   /**
    * Button Handler - Export State
    */
-  export_ = () => {
-    let { GOL } = this.props;
+  exportHandler = () => {
+    let { listLife } = this.props;
     var i, j, url = '', cellState = '', params = '';
 
-    for (i = 0; i < GOL.listLife.actualState.length; i++) {
-      cellState += '{"' + GOL.listLife.actualState[i][0] + '":[';
+    for (i = 0; i < listLife.actualState.length; i++) {
+      cellState += '{"' + listLife.actualState[i][0] + '":[';
       //cellState += '{"one":[';
-      for (j = 1; j < GOL.listLife.actualState[i].length; j++) {
-        cellState += GOL.listLife.actualState[i][j] + ',';
+      for (j = 1; j < listLife.actualState[i].length; j++) {
+        cellState += listLife.actualState[i][j] + ',';
       }
       cellState = cellState.substring(0, cellState.length - 1) + ']},';
     }
@@ -221,11 +357,12 @@ class ConwayAnimate extends Component {
     if (cellState.length !== 0) {
       url = (window.location.href.indexOf('?') === -1) ? window.location.href : window.location.href.slice(0, window.location.href.indexOf('?'));
 
+      let { trail, grid, colors, zoom } = this.props.conwayConfig;
       params = '?autoplay=0' +
-        '&trail=' + (GOL.trail.current ? '1' : '0') +
-        '&grid=' + (GOL.grid.current + 1) +
-        '&colors=' + (GOL.colors.current + 1) +
-        '&zoom=' + (GOL.zoom.current + 1) +
+        '&trail=' + (trail.current ? '1' : '0') +
+        '&grid=' + (grid.current + 1) +
+        '&colors=' + (colors.current + 1) +
+        '&zoom=' + (zoom.current + 1) +
         '&s=[' + cellState + ']';
 
       document.getElementById('exportUrlLink').href = params;
@@ -239,9 +376,8 @@ class ConwayAnimate extends Component {
   //
 
   canvasMouseDown = (event) => {
-    let { GOL } = this.props;
     var position = this.mousePosition(event);
-    GOL.canvas.switchCell(position[0], position[1]);
+    this.switchCell(position[0], position[1]);
     this.setState({
       lastX : position[0],
       lastY: position[1],
@@ -260,7 +396,7 @@ class ConwayAnimate extends Component {
     if (this.state.mouseDown) {
       var position = this.mousePosition(event);
       if ((position[0] !== this.state.lastX) || (position[1] !== this.state.lastY)) {
-        GOL.canvas.switchCell(position[0], position[1]);
+        this.switchCell(position[0], position[1]);
         this.setState({
           lastX: position[0],
           lastY: position[1]
@@ -270,10 +406,10 @@ class ConwayAnimate extends Component {
   }
 
   mousePosition(e) {
-    let { GOL } = this.props;
+    let {zoom} = this.props.conwayConfig;
     // http://www.malleus.de/FAQ/getImgMousePos.html
     // http://www.quirksmode.org/js/events_properties.html#position
-    var event, x, y, domObject, posx = 0, posy = 0, top = 0, left = 0, cellSize = GOL.zoom.schemes[GOL.zoom.current].cellSize + 1;
+    var event, x, y, domObject, posx = 0, posy = 0, top = 0, left = 0, cellSize = zoom.schemes[zoom.current].cellSize + 1;
 
     event = e;
     if (!event) {
@@ -305,8 +441,14 @@ class ConwayAnimate extends Component {
     return [x, y];
   }
 
+  //
+  // ─── LIFECYCLE ───────────────────────────────────────────────────────────────────────────
+  //
+
+    
 
   componentDidMount() {
+    this.prepare();
     document.addEventListener("keydown", this.handleKeys, false);
     document.addEventListener("mouseup", this.canvasMouseUp, false);
   }
@@ -314,6 +456,7 @@ class ConwayAnimate extends Component {
   componentWillUnmount() {
     document.removeEventListener("keydown", this.handleKeys, false);
     document.removeEventListener("mouseup", this.canvasMouseUp, false);
+    window.cancelAnimationFrame(this.rAF);
   }
 
   
@@ -321,17 +464,30 @@ class ConwayAnimate extends Component {
   render() {
     return (
       <React.Fragment>
-        <ConwayRender
-          run={this.run}
-          step={this.step}
-          clear={this.clear}
-          trail={this.trail}
-          colors={this.colors}
-          grid={this.grid}
-          export_={this.export_}
-          canvasMouseDown={this.canvasMouseDown}
-          canvasMouseMove={this.canvasMouseMove}
+        {this.state.age ?
+          <ConwayRender
+            GOL={this.props.GOL}
+            listLife={this.props.listLife}
+            runInit={this.props.runInit}
+            conwayConfig={this.props.conwayConfig}
+            canvasMouseDown={this.canvasMouseDown}
+            canvasMouseMove={this.canvasMouseMove}
+            clearWorld={this.clearWorld}
+            age={this.state.age}
+            cellChange={this.state.cellChange}
+          /> 
+          : <h1>Loading...</h1>
+        }
+        <ConwayControls 
           {...this.props}
+          runHandler={this.runHandler}
+          stepHandler={this.stepHandler}
+          clearHandler={this.clearHandler}
+          trailHandler={this.trailHandler}
+          colorsHandler={this.colorsHandler}
+          gridHandler={this.gridHandler}
+          exportHandler={this.exportHandler}
+          status={this.state.status}
         />
       </React.Fragment>
     );

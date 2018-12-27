@@ -4,46 +4,48 @@ class ConwayControls extends Component {
 
   handleRunButtonClicked = (e) => {
     e.preventDefault();
-    this.props.run();
+    this.props.runHandler();
   }
   handleStepButtonClicked = (e) =>{
     e.preventDefault();
-    this.props.step();
+    this.props.stepHandler();
   }
 
   handleClearButtonClicked = (e) =>{
     e.preventDefault();
-    this.props.clear();
+    this.props.clearHandler();
   }
 
   handleExportButtonClicked = (e) =>{
     e.preventDefault();
-    this.props.export_();
+    this.props.exportHandler();
   }
 
   handleTrailButtonClicked = (e) =>{
     e.preventDefault();
-    this.props.trail();
+    this.props.trailHandler();
   }
 
   handleGridButtonClicked = (e) =>{
     e.preventDefault();
-    this.props.grid();
+    this.props.gridHandler();
   }
   handleColorsButtonClicked = (e) =>{
     e.preventDefault();
-    this.props.colors();
+    this.props.colorsHandler();
   }
 
   render() {
+    let {status} = this.props;
     return (
       <div>
         <div className="cl">&nbsp;</div>
         <div className="box">
           <div className="subtitle">Running Information</div>
-          <p className="info"><abbr title="Current Generation">Generation</abbr>: <span id="generation"></span> | <abbr title="Number of live cells">Live cells</abbr>: <span id="livecells"></span> | <abbr title="Execution times: Algorithm / Canvas (Algorithm / Canvas Averages)">Step time</abbr>: <span id="steptime"></span> ms </p>
+          <p className="info">
+            <abbr title="Current Generation">Generation</abbr>: <span id="generation">{status.generation}</span> | <abbr title="Number of live cells">Live cells</abbr>: <span id="livecells">{status.livecells}</span> | <abbr title="Execution times: Algorithm / Canvas (Algorithm / Canvas Averages)">Step time</abbr>: <span id="steptime">{status.steptime}</span> ms 
+          </p>
 
-          <span id="hint">Hint: hit the <strong>Run</strong> button!</span>
         </div>
 
         <div className="box controls">
@@ -63,7 +65,7 @@ class ConwayControls extends Component {
             <input type="button" id="buttonTrail" onClick={this.handleTrailButtonClicked} value="Trail" />
             <input type="button" id="buttonGrid" onClick={this.handleGridButtonClicked} value="Grid" />
             <input type="button" id="buttonColors" onClick={this.handleColorsButtonClicked} value="Colors" />
-            <span id="layoutMessages"></span>
+            <span id="layoutMessages">{status.messages.layout}</span>
           </form>
         </div>
 
