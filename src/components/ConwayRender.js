@@ -1,16 +1,20 @@
 import React, { Component } from 'react';
 import isEqual from 'lodash.isequal';
+import PureCanvas from './PureCanvas';
 
 
 class ConwayRender extends Component {
   constructor(props) {
     super(props);
-    this.canvasRef = React.createRef();
+    // this.canvasRef = React.createRef();
     this.cellSize = undefined;
     this.cellSpace = undefined;
     this.width = undefined;
     this.height = undefined;
-    // this.context = undefined;
+  }
+
+  saveContext = (canvas) => {
+    this._canvas = canvas;
   }
 
   //
@@ -22,9 +26,8 @@ class ConwayRender extends Component {
    */
   drawWorld() {
     let { GOL, conwayConfig } = this.props;
-    // let { context } = this;
-    let canvas = this.canvasRef.current;
-    let context = canvas.getContext('2d');
+
+    let context = this._canvas.getContext('2d');
 
     // Special no grid case
     if (conwayConfig.grid.schemes[conwayConfig.grid.current].color === '') {
@@ -42,10 +45,10 @@ class ConwayRender extends Component {
     // Dynamic canvas size
     this.width = this.width + (cellSpace * GOL.columns) + (cellSize * GOL.columns);
     // this.width = window.innerWidth
-    canvas.setAttribute('width', this.width);
+    this._canvas.setAttribute('width', this.width);
     
     this.height = this.height + (cellSpace * GOL.rows) + (cellSize * GOL.rows);
-    canvas.setAttribute('height', this.height);
+    this._canvas.setAttribute('height', this.height);
     
     
     // Fill background
@@ -70,11 +73,9 @@ class ConwayRender extends Component {
     let { age, conwayConfig } = this.props;;
     let { cellSize, cellSpace } = this;
 
-    let canvas = this.canvasRef.current;
-    let context = canvas.getContext('2d');
+    let context = this._canvas.getContext('2d');
 
     if (alive) {
-
       if (age[i][j] > -1)
         context.fillStyle = conwayConfig.colors.schemes[conwayConfig.colors.current].alive[age[i][j] % conwayConfig.colors.schemes[conwayConfig.colors.current].alive.length];
 
@@ -127,19 +128,19 @@ class ConwayRender extends Component {
 
 
   componentDidMount() {
-    this.props.runInit();
     this.drawWorld();
-    let canvas = this.canvasRef.current;
-    canvas.addEventListener("mousedown", this.handleMouseDown, false);
-    canvas.addEventListener("mousemove", this.handleMouseMove, false);
+    this._canvas.addEventListener("mousedown", this.handleMouseDown, false);
+    this._canvas.addEventListener("mousemove", this.handleMouseMove, false);
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(prevProps) {
 
     // drawCell triggers
-    if(!isEqual(prevProps.cellChange, this.props.cellChange)) {
-      let { i, j, alive } = this.props.cellChange;
-      this.drawCell(i, j, alive);
+    if(!isEqual(prevProps.cellUpdates, this.props.cellUpdates)) {
+      this.props.cellUpdates.forEach(update => {
+        let { i, j, alive } = update;
+        this.drawCell(i, j, alive);
+      })
     }
 
     if(!isEqual(prevProps.conwayConfig, this.props.conwayConfig)) {
@@ -148,14 +149,13 @@ class ConwayRender extends Component {
   }
 
   componentWillUnmount() {
-    let canvas = this.canvasRef.current;
-    canvas.removeEventListener("mousedown", this.handleMouseDown, false);
-    canvas.removeEventListener("mousemove", this.handleMouseMove, false);
+    this._canvas.removeEventListener("mousedown", this.handleMouseDown, false);
+    this._canvas.removeEventListener("mousemove", this.handleMouseMove, false);
   }
 
   render() {
     return (
-        <canvas id="canvas" ref={this.canvasRef} />
+      <PureCanvas contextRef={this.saveContext} />
     );
   }
 }

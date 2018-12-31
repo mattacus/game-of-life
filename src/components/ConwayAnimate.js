@@ -12,11 +12,7 @@ class ConwayAnimate extends Component {
       lastY: 0,
       age: undefined,
       rAF: undefined,
-      cellChange: {
-        i: undefined,
-        j: undefined,
-        alive: undefined,
-      },
+      cellUpdates: [], // list of updates to be passed to Render on each nextStep call
       status: {
         generation: null,
         steptime: null,
@@ -69,7 +65,7 @@ class ConwayAnimate extends Component {
    */
   nextStep = () => {
     let { GOL, conwayConfig, listLife } = this.props;
-    let { status } = this.state;
+    let { status, age } = this.state;
 
     var i, x, y, r, liveCellNumber, algorithmTime, guiTime;
 
@@ -82,7 +78,9 @@ class ConwayAnimate extends Component {
     algorithmTime = (new Date()) - algorithmTime;
 
 
-    // Canvas run
+    // Collect updates to be passed to canvas
+
+    let cellUpdates = [];
 
     guiTime = (new Date());
 
@@ -91,17 +89,19 @@ class ConwayAnimate extends Component {
       y = listLife.redrawList[i][1];
 
       if (listLife.redrawList[i][2] === 1) {
-        this.changeCelltoAlive(x, y);
+        age = this.changeCelltoAlive(x, y, age);
+        cellUpdates.push({ i: x, j: y, alive: true });
       } else if (listLife.redrawList[i][2] === 2) {
-        this.keepCellAlive(x, y);
+        age = this.keepCellAlive(x, y, age);
+        cellUpdates.push({ i: x, j: y, alive: true });
       } else {
-        this.changeCelltoDead(x, y);
+        age = this.changeCelltoDead(x, y, age);
+        cellUpdates.push({ i: x, j: y, alive: false });
       }
     }
 
     guiTime = (new Date()) - guiTime;
 
-    // Pos-run updates
 
     // Clear Trail
     if (conwayConfig.trail.schedule) {
@@ -131,7 +131,12 @@ class ConwayAnimate extends Component {
     GOL.times.gui = (GOL.times.gui * (1 - r)) + (guiTime * r);
     status.steptime = algorithmTime + ' / ' + guiTime + ' (' + Math.round(GOL.times.algorithm) + ' / ' + Math.round(GOL.times.gui) + ')';
 
-    this.setState({ status });
+    // Batched state updates
+    this.setState({
+      status,
+      age,
+      cellUpdates
+    });
 
     // Flow Control
     if (GOL.running) {
@@ -184,48 +189,38 @@ class ConwayAnimate extends Component {
   /**
    * keepCellAlive
    */
-  keepCellAlive(i, j) {
+  keepCellAlive(i, j, age) {
     let { GOL } = this.props;
     if (i >= 0 && i < GOL.columns && j >= 0 && j < GOL.rows) {
-      let { age } = this.state;
       age[i][j]++;
-      this.setState({ 
-        age,
-        cellChange: { i, j, alive: true }
-      });
     }
+    return age;
   }
 
 
   /**
    * changeCelltoAlive
    */
-  changeCelltoAlive(i, j) {
+  changeCelltoAlive(i, j, age) {
     let { GOL } = this.props;
     if (i >= 0 && i < GOL.columns && j >= 0 && j < GOL.rows) {
       let { age } = this.state;
       age[i][j] = 1;
-      this.setState({
-        age,
-        cellChange: { i, j, alive: true }
-      });
     }
+    return age;
   }
 
 
   /**
    * changeCelltoDead
    */
-  changeCelltoDead(i, j) {
+  changeCelltoDead(i, j, age) {
     let { GOL } = this.props;
     if (i >= 0 && i < GOL.columns && j >= 0 && j < GOL.rows) {
       let { age } = this.state;
       age[i][j] = -age[i][j]; // Keep trail
-      this.setState({
-        age,
-        cellChange: { i, j, alive: false }
-      });
     }
+    return age;
   }
 
   //
@@ -474,7 +469,7 @@ class ConwayAnimate extends Component {
             canvasMouseMove={this.canvasMouseMove}
             clearWorld={this.clearWorld}
             age={this.state.age}
-            cellChange={this.state.cellChange}
+            cellUpdates={this.state.cellUpdates}
           /> 
           : <h1>Loading...</h1>
         }
