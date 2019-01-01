@@ -387,7 +387,6 @@ class ConwayAnimate extends Component {
   }
 
   canvasMouseMove = (event) => {
-    let { GOL } = this.props;
     if (this.state.mouseDown) {
       var position = this.mousePosition(event);
       if ((position[0] !== this.state.lastX) || (position[1] !== this.state.lastY)) {

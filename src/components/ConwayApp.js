@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import ConwayAnimate from './ConwayAnimate';
 import { conwayConfig } from './config';
 import { listLife } from './listLife';
-// import GOL from './game-of-life';
 
 const midX = window.innerWidth / 2;
 const midY = window.innerHeight / 2;
@@ -12,7 +11,7 @@ let GOL = {
   columns: 0,
   rows: 0,
 
-  waitTime: 0,
+  waitTime: 50,
   generation: 0,
 
   running: false,
