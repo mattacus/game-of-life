@@ -25,7 +25,7 @@ class ConwayRender extends Component {
    * drawWorld
    */
   drawWorld() {
-    let { GOL, conwayConfig } = this.props;
+    let { conwayConfig, rows, columns } = this.props;
 
     let context = this._canvas.getContext('2d');
 
@@ -43,11 +43,11 @@ class ConwayRender extends Component {
     let { cellSize, cellSpace } = this;
     
     // Dynamic canvas size
-    this.width = this.width + (cellSpace * GOL.columns) + (cellSize * GOL.columns);
+    this.width = this.width + (cellSpace * columns) + (cellSize * columns);
     // this.width = window.innerWidth
     this._canvas.setAttribute('width', this.width);
     
-    this.height = this.height + (cellSpace * GOL.rows) + (cellSize * GOL.rows);
+    this.height = this.height + (cellSpace * rows) + (cellSize * rows);
     this._canvas.setAttribute('height', this.height);
     
     
@@ -55,8 +55,8 @@ class ConwayRender extends Component {
     context.fillStyle = conwayConfig.grid.schemes[conwayConfig.grid.current].color;
     context.fillRect(0, 0, this.width, this.height);
     
-    for (let i = 0; i < GOL.columns; i++) {
-      for (let j = 0; j < GOL.rows; j++) {
+    for (let i = 0; i < columns; i++) {
+      for (let j = 0; j < rows; j++) {
         if (this.props.listLife.isAlive(i, j)) {
           this.drawCell(i, j, true);
         } else {
@@ -129,8 +129,8 @@ class ConwayRender extends Component {
 
   componentDidMount() {
     this.drawWorld();
-    this._canvas.addEventListener("mousedown", this.handleMouseDown, false);
-    this._canvas.addEventListener("mousemove", this.handleMouseMove, false);
+    this._canvas.addEventListener("mousedown", this.handleMouseDown);
+    this._canvas.addEventListener("mousemove", this.handleMouseMove);
   }
 
   componentDidUpdate(prevProps) {
@@ -142,7 +142,8 @@ class ConwayRender extends Component {
         this.drawCell(i, j, alive);
       })
     }
-
+    
+    // drawWorld triggers
     if(!isEqual(prevProps.conwayConfig, this.props.conwayConfig)) {
       this.drawWorld();
     }

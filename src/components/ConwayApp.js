@@ -1,49 +1,24 @@
 import React, { Component } from 'react';
 import ConwayAnimate from './ConwayAnimate';
-import { conwayConfig } from './config';
-import { listLife } from './listLife';
+import { conwayConfig } from './helpers/config';
+import { listLife } from './helpers/listLife';
 
 const midX = window.innerWidth / 2;
 const midY = window.innerHeight / 2;
-
-let GOL = {
-
-  columns: 0,
-  rows: 0,
-
-  waitTime: 50,
-  generation: 0,
-
-  running: false,
-  autoplay: false,
-
-
-  // Clear state
-  clear: {
-    schedule: false
-  },
-
-
-  // Average execution times
-  times: {
-    algorithm: 0,
-    gui: 0
-  },
-
-  // Initial state
-  initialState: `[{"${(midY / 5)}":[${(midX / 5) + 1}]},{"${(midY / 5) + 1}":[${(midX / 5) + 3}]},{"${(midY / 5) + 2}":[${(midX / 5)},${(midX / 5) + 1},${(midX / 5) + 4},${(midX / 5) + 5},${(midX / 5) + 6}]}]`,
-}
 
 class ConwayApp extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      GOL,
       conwayConfig,
       listLife,
       urlParameters: null,
-      loading: true
+      loading: true,
+      rows: 0,
+      columns: 0
     }
+    this.autoplay = false;
+    this.initialState = `[{"${(midY / 5)}":[${(midX / 5) + 1}]},{"${(midY / 5) + 1}":[${(midX / 5) + 3}]},{"${(midY / 5) + 2}":[${(midX / 5)},${(midX / 5) + 1},${(midX / 5) + 4},${(midX / 5) + 5},${(midX / 5) + 6}]}]`;
   }
 
   //
@@ -53,11 +28,12 @@ class ConwayApp extends Component {
 
   runInit = () => {
     try {
-      listLife.init();   // Reset/init algorithm
-      this.loadConfig();      // Load config from URL (autoplay, colors, zoom, ...)
-      this.loadState();       // Load state from URL
-      // this.keepDOMElements(); // Keep DOM References (getElementsById)
-      this.setState({loading: false})
+      this.setState({ loading: true }, () => {
+        listLife.init();   // Reset/init algorithm
+        this.loadConfig();      // Load config from URL (autoplay, colors, zoom, ...)
+        this.loadState();       // Load state from URL
+        this.setState({loading: false})
+      })
     } catch (e) {
       console.log("Error: " + e);
     }
@@ -67,59 +43,54 @@ class ConwayApp extends Component {
    * Load config from URL
    */
   loadConfig() {
-    let { GOL, conwayConfig } = this.state;
+    let { conwayConfig, rows, columns } = this.state;
     let { colors, grid, zoom, trail } = conwayConfig;
 
-    GOL.autoplay = this.getUrlParameter('autoplay') === '1' ? true : GOL.autoplay;
+    this.autoplay = this.getUrlParameter('autoplay') === '1' ? true : this.autoplay;
     if (this.getUrlParameter('trail') === '1') {
       trail.current = true;
       conwayConfig.trail = trail;
     }
     
-    // // Initial color config
-    // colors = parseInt(this.getUrlParameter('colors'), 10);
-    // if (isNaN(colors) || colors < 1 || colors > GOL.colors.schemes.length) {
-    //     colors = 1;
-    //   }
+    // Initial color config
+    let urlColors = parseInt(this.getUrlParameter('colors'), 10);
+    if (isNaN(urlColors) || urlColors < 1 || urlColors > conwayConfig.colors.schemes.length) {
+      colors.current = 3;
+    }
       
-    //   // Initial grid config
-    //   grid = parseInt(this.getUrlParameter('grid'), 10);
-    //   if (isNaN(grid) || grid < 1 || grid > GOL.grid.schemes.length) {
-    //       grid = 1;
-    //     }
-        
-    //     // Initial zoom config
-    //     zoom = parseInt(this.getUrlParameter('zoom'), 10);
-    //     if (isNaN(zoom) || zoom < 1 || zoom > GOL.zoom.schemes.length) {
-    //         zoom = 1;
-    //       }
+    // Initial grid config
+    let urlGrid = parseInt(this.getUrlParameter('grid'), 10);
+    if (isNaN(urlGrid) || urlGrid < 1 || urlGrid > conwayConfig.grid.schemes.length) {
+      grid.current = 3;
+    }
       
-    colors.current = 3;
-    grid.current = 3;
-    zoom.current = 0;
+    // Initial zoom config
+    let urlZoom = parseInt(this.getUrlParameter('zoom'), 10);
+    if (isNaN(urlZoom) || urlZoom < 1 || urlZoom > conwayConfig.zoom.schemes.length) {
+      zoom.current = 0;
+    }
 
     conwayConfig.colors = colors;
     conwayConfig.grid = grid;
     conwayConfig.zoom = zoom;
-      
-    this.setState({ conwayConfig });
+    
+    rows = conwayConfig.zoom.schemes[conwayConfig.zoom.current].rows;
+    columns = conwayConfig.zoom.schemes[conwayConfig.zoom.current].columns;
 
-    GOL.rows = conwayConfig.zoom.schemes[conwayConfig.zoom.current].rows;
-    GOL.columns = conwayConfig.zoom.schemes[conwayConfig.zoom.current].columns;
+    this.setState({ conwayConfig, rows, columns });
   }
 
   /**
-         * Load world state from URL parameter
-         */
+     * Load world state from URL parameter
+     */
   loadState() {
-    let { GOL } = this.state;
-    var state, i, j, y, s = this.getUrlParameter('s');
+    let state, i, j, y, s = this.getUrlParameter('s');
 
     if (s === 'random') {
-      GOL.randomState();
+      this.randomState();
     } else {
       if (s == undefined) {
-        s = GOL.initialState;
+        s = this.initialState;
       }
 
       state = JSON.parse(decodeURI(s));
@@ -138,28 +109,15 @@ class ConwayApp extends Component {
      * Create a random pattern
      */
   randomState() {
-    let { GOL } = this.state;
-    var i, liveCells = (GOL.rows * GOL.columns) * 0.12;
+    let { rows, columns } = this.state;
+    let i, liveCells = (rows * columns) * 0.12;
 
     for (i = 0; i < liveCells; i++) {
-      listLife.addCell(this.random(0, GOL.columns - 1), this.random(0, GOL.rows - 1), listLife.actualState);
+      listLife.addCell(this.random(0, columns - 1), this.random(0, rows - 1), listLife.actualState);
     }
 
     this.listLife.nextGeneration();
   }
-
-  /**
-   * keepDOMElements
-   * Save DOM references for this session (one time execution)
-   */
-  // keepDOMElements() {
-  //   let { GOL } = this.state;
-  //   GOL.element.generation = document.getElementById('generation');
-  //   GOL.element.steptime = document.getElementById('steptime');
-  //   GOL.element.livecells = document.getElementById('livecells');
-  //   GOL.element.messages.layout = document.getElementById('layoutMessages');
-  //   this.setState({GOL, loading: false})
-  // }
 
   /**
    * Return a random integer from [min, max]
@@ -173,7 +131,7 @@ class ConwayApp extends Component {
    */
   getUrlParameter(name) {
     if (this.state.urlParameters === null) { // Cache miss
-      var hash, hashes, i;
+      let hash, hashes, i;
       let newParams = [];
       
       hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
@@ -203,11 +161,13 @@ class ConwayApp extends Component {
      <React.Fragment>
        {!this.state.loading ? 
          <ConwayAnimate 
-           GOL={this.state.GOL}
+           autoplay={this.autoplay}
            listLife={this.state.listLife}
            conwayConfig={this.state.conwayConfig}
            updateConfig={this.updateConfig}
            runInit={this.runInit}
+           rows={this.state.rows}
+           columns={this.state.columns}
          />
          : <div>Loading...</div>
        }

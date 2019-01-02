@@ -43,7 +43,10 @@ class ConwayControls extends Component {
         <div className="box">
           <div className="subtitle">Running Information</div>
           <p className="info">
-            <abbr title="Current Generation">Generation</abbr>: <span id="generation">{status.generation}</span> | <abbr title="Number of live cells">Live cells</abbr>: <span id="livecells">{status.livecells}</span> | <abbr title="Execution times: Algorithm / Canvas (Algorithm / Canvas Averages)">Step time</abbr>: <span id="steptime">{status.steptime}</span> ms 
+            <abbr title="Current Generation">Generation</abbr>: 
+            <span id="generation">{status.generation}</span> | 
+            <abbr title="Number of live cells">Live cells</abbr>: 
+            <span id="livecells">{status.livecells}</span>
           </p>
 
         </div>

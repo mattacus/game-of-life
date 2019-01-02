@@ -1,5 +1,5 @@
 export const conwayConfig = {
-
+  
   // Trail state
   trail: {
     current: false,
