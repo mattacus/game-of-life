@@ -351,6 +351,10 @@ class ConwayAnimate extends Component {
     }
   }
 
+  updateWaitTime = (newWaitTime) => {
+    this.setState({ waitTime: newWaitTime });
+  }
+
   //
   // ─── MOUSE HANDLERS ─────────────────────────────────────────────────────────────
   //
@@ -365,7 +369,7 @@ class ConwayAnimate extends Component {
     });
   }
 
-  canvasMouseUp = (event) => {
+  canvasMouseUp = () => {
     this.setState({
       mouseDown: false
     });
@@ -430,6 +434,7 @@ class ConwayAnimate extends Component {
           colorsHandler={this.colorsHandler}
           gridHandler={this.gridHandler}
           exportHandler={this.exportHandler}
+          updateWaitTime={this.updateWaitTime}
           status={this.state.status}
         />
       </React.Fragment>

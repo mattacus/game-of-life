@@ -63,25 +63,24 @@ export const conwayConfig = {
     schedule: false,
 
     schemes: [
-      {
+      { // Classic
         dead: '#FFFFFF',
-        trail: ['#B5ECA2'],
-        alive: ['#9898FF', '#8585FF', '#7272FF', '#5F5FFF', '#4C4CFF', '#3939FF', '#2626FF', '#1313FF', '#0000FF', '#1313FF', '#2626FF', '#3939FF', '#4C4CFF', '#5F5FFF', '#7272FF', '#8585FF']
-      },
-      {
-        dead: '#FFFFFF',
-        trail: ['#EE82EE', '#FF0000', '#FF7F00', '#FFFF00', '#008000 ', '#0000FF', '#4B0082'],
-        alive: ['#FF0000', '#FF7F00', '#FFFF00', '#008000 ', '#0000FF', '#4B0082', '#EE82EE']
-      },
-
-      {
-        dead: '#FFFFFF',
-        trail: ['#9898FF', '#8585FF', '#7272FF', '#5F5FFF', '#4C4CFF', '#3939FF', '#2626FF', '#1313FF', '#0000FF', '#1313FF', '#2626FF', '#3939FF', '#4C4CFF', '#5F5FFF', '#7272FF', '#8585FF'],
+        trail: ['#dcdcdc'],
         alive: ['#000000']
       },
-      {
+      { // Starlight
+        dead: '#111111',
+        trail: ['#222222'],
+        alive: ['#ffffff', '#f2f2f2', '#e6e6e6', '#d9d9d9', '#cccccc', '#bfbfbf', '#b3b3b3', '#a6a6a6', '#999999', '#8c8c8c', '#808080']
+      },
+      { // Magma
+        dead: '#393e46',
+        trail: ['#b55400'],
+        alive: ["#000004", "#140e36", "#3b0f70", "#641a80", "#8c2981", "#b73779", "#de4968", "#f7705c", "#fe9f6d", "#fecf92", "#fcfdbf"]
+      },
+      { // Ocean
         dead: '#35478C',
-        trail: ['#4E7AC7'],
+        trail: ["#6e40aa", "#6054c8", "#4c6edb", "#368ce1", "#23abd8", "#1ac7c2", "#1ddfa3", "#30ef82", "#52f667", "#7ff658", "#aff05b"],
         alive: ['#16193B']
       },
 

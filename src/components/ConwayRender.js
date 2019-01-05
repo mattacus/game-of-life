@@ -72,21 +72,25 @@ class ConwayRender extends Component {
   drawCell(i, j, alive) {
     let { age, conwayConfig } = this.props;;
     let { cellSize, cellSpace } = this;
-
     let context = this._canvas.getContext('2d');
 
-    if (alive) {
-      if (age[i][j] > -1)
-        context.fillStyle = conwayConfig.colors.schemes[conwayConfig.colors.current].alive[age[i][j] % conwayConfig.colors.schemes[conwayConfig.colors.current].alive.length];
-
+    // boundary checking catch-all temp fix
+    if (!Array.isArray(age) || !age.length || (i > age.length - 1) || !Array.isArray(age[i]) || !age[i].length) {
+      console.log('age was undefined');
+      return;
     } else {
-      if (conwayConfig.trail.current && age[i][j] < 0) {
-        context.fillStyle = conwayConfig.colors.schemes[conwayConfig.colors.current].trail[(age[i][j] * -1) % conwayConfig.colors.schemes[conwayConfig.colors.current].trail.length];
+      if (alive) {
+        if (age[i][j] > -1) {
+          context.fillStyle = conwayConfig.colors.schemes[conwayConfig.colors.current].alive[age[i][j] % conwayConfig.colors.schemes[conwayConfig.colors.current].alive.length];
+        } 
       } else {
-        context.fillStyle = conwayConfig.colors.schemes[conwayConfig.colors.current].dead;
+        if (conwayConfig.trail.current && age[i][j] < 0) {
+          context.fillStyle = conwayConfig.colors.schemes[conwayConfig.colors.current].trail[(age[i][j] * -1) % conwayConfig.colors.schemes[conwayConfig.colors.current].trail.length];
+        } else {
+          context.fillStyle = conwayConfig.colors.schemes[conwayConfig.colors.current].dead;
+        }
       }
     }
-
     context.fillRect(cellSpace + (cellSpace * i) + (cellSize * i), cellSpace + (cellSpace * j) + (cellSize * j), cellSize, cellSize);
 
   }

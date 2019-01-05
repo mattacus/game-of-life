@@ -1,6 +1,13 @@
 import React, { Component } from 'react';
 
 class ConwayControls extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      speedValue: 50
+    }
+  }
 
   handleRunButtonClicked = (e) => {
     e.preventDefault();
@@ -35,6 +42,13 @@ class ConwayControls extends Component {
     this.props.colorsHandler();
   }
 
+  handleSpeedSliderChange = (e) => {
+    e.preventDefault();
+    let { value } = e.target;
+    this.setState({ speedValue: value });
+    this.props.updateWaitTime(value)
+  }
+
   render() {
     let {status} = this.props;
     return (
@@ -60,6 +74,7 @@ class ConwayControls extends Component {
             <input type="button" value="Export" id="buttonExport" onClick={this.handleExportButtonClicked} />
             <span id="exportUrl"> | <a id="exportUrlLink">Link</a> | <a id="exportTinyUrlLink" title="Tiny URL">Create micro URL</a></span>
           </form>
+          <input type="range" min="0" max="100" value={this.state.speedValue} onChange={this.handleSpeedSliderChange}/><label>Speed</label>
         </div>
 
         <div className="box layout">

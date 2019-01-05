@@ -55,7 +55,7 @@ class ConwayApp extends Component {
     // Initial color config
     let urlColors = parseInt(this.getUrlParameter('colors'), 10);
     if (isNaN(urlColors) || urlColors < 1 || urlColors > conwayConfig.colors.schemes.length) {
-      colors.current = 3;
+      colors.current = 2;
     }
       
     // Initial grid config
