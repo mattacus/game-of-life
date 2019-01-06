@@ -76,7 +76,6 @@ class ConwayRender extends Component {
 
     // boundary checking catch-all temp fix
     if (!Array.isArray(age) || !age.length || (i > age.length - 1) || !Array.isArray(age[i]) || !age[i].length) {
-      console.log('age was undefined');
       return;
     } else {
       if (alive) {
