@@ -53,7 +53,6 @@ class ConwayControls extends Component {
     let {status} = this.props;
     return (
       <div>
-        <div className="cl">&nbsp;</div>
         <div className="box">
           <div className="subtitle">Running Information</div>
           <p className="info">

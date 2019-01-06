@@ -7,7 +7,8 @@
     "build:prod": "parcel build src/index.html",
     "build:docker": "docker build -t mattld/react-gol .",
     "dev": "parcel src/index.html",
-    "docker": "docker run -d -p 8080:8080 --name react-gol mattld/react-gol"
+    "docker": "docker run -d -p 8080:8080 --name react-gol mattld/react-gol",
+    "deploy": "source .env; ssh ${DO_SSH_ADDR} 'docker-compose pull && docker-compose up -d'"
   },
   "repository": {
     "type": "git",
@@ -25,6 +26,7 @@
     "parcel-bundler": "^1.11.0"
   },
   "dependencies": {
+    "dotenv": "^6.2.0",
     "lodash.isequal": "^4.5.0",
     "react": "^16.7.0",
     "react-dom": "^16.7.0"
