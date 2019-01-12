@@ -72,6 +72,7 @@ class ConwayRender extends Component {
   drawCell(i, j, alive) {
     let { age, conwayConfig } = this.props;;
     let { cellSize, cellSpace } = this;
+    let { colors } = conwayConfig;
     let context = this._canvas.getContext('2d');
 
     // boundary checking catch-all temp fix
@@ -80,13 +81,13 @@ class ConwayRender extends Component {
     } else {
       if (alive) {
         if (age[i][j] > -1) {
-          context.fillStyle = conwayConfig.colors.schemes[conwayConfig.colors.current].alive[age[i][j] % conwayConfig.colors.schemes[conwayConfig.colors.current].alive.length];
+          context.fillStyle = colors.schemes[colors.current].alive[age[i][j] % colors.schemes[colors.current].alive.length];
         } 
       } else {
         if (conwayConfig.trail.current && age[i][j] < 0) {
-          context.fillStyle = conwayConfig.colors.schemes[conwayConfig.colors.current].trail[(age[i][j] * -1) % conwayConfig.colors.schemes[conwayConfig.colors.current].trail.length];
+          context.fillStyle = colors.schemes[colors.current].trail[(age[i][j] * -1) % colors.schemes[colors.current].trail.length];
         } else {
-          context.fillStyle = conwayConfig.colors.schemes[conwayConfig.colors.current].dead;
+          context.fillStyle = colors.schemes[colors.current].dead;
         }
       }
     }
@@ -114,7 +115,7 @@ class ConwayRender extends Component {
 
 
   //
-  // ─── MOUSE HANDLERS ─────────────────────────────────────────────────────────────
+  // ─── MOUSE/TOUCH HANDLERS ─────────────────────────────────────────────────────────────
   //
 
   handleMouseDown = (e) => {
@@ -123,6 +124,15 @@ class ConwayRender extends Component {
 
   handleMouseMove = (e) => {
     this.props.canvasMouseMove(e);
+  }
+
+  handleTouchStart = (e) => {
+    this.handleMouseDown(e.touches[0]);
+  }
+
+  handleTouchMove = (e) => {
+    e.preventDefault();
+    this.handleMouseMove(e.touches[0]);
   }
 
   //
@@ -134,6 +144,8 @@ class ConwayRender extends Component {
     this.drawWorld();
     this._canvas.addEventListener("mousedown", this.handleMouseDown);
     this._canvas.addEventListener("mousemove", this.handleMouseMove);
+    this._canvas.addEventListener("touchstart", this.handleTouchStart);
+    this._canvas.addEventListener("touchmove", this.handleTouchMove);
   }
 
   componentDidUpdate(prevProps) {
@@ -155,6 +167,8 @@ class ConwayRender extends Component {
   componentWillUnmount() {
     this._canvas.removeEventListener("mousedown", this.handleMouseDown, false);
     this._canvas.removeEventListener("mousemove", this.handleMouseMove, false);
+    this._canvas.removeEventListener("touchstart", this.handleTouchStart, false);
+    this._canvas.removeEventListener("touchmove", this.handleTouchMove, false);
   }
 
   render() {

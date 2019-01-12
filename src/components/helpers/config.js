@@ -2,14 +2,12 @@ export const conwayConfig = {
   
   // Trail state
   trail: {
-    current: false,
-    schedule: false
+    current: true,
   },
 
   // Grid style
   grid: {
     current: 3,
-
     schemes: [
       {
         color: '#F3F3F3'
@@ -32,8 +30,6 @@ export const conwayConfig = {
   // Zoom level
   zoom: {
     current: 0,
-    schedule: false,
-
     schemes: [
       // { columns : 100, rows : 48, cellSize : 8 },
       {
@@ -60,8 +56,6 @@ export const conwayConfig = {
   // Cell colors
   colors: {
     current: 0,
-    schedule: false,
-
     schemes: [
       { // Classic
         dead: '#FFFFFF',

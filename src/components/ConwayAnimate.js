@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import ConwayRender from './ConwayRender';
-import ConwayControls from './ConwayControls';
+import MenuContainer from './menu/MenuContainer';
 import mousePosition from './helpers/mouseposition';
 
 class ConwayAnimate extends Component {
@@ -247,9 +247,6 @@ class ConwayAnimate extends Component {
     this.setState({ running }, () => {
       if (running) {
         this.nextStep();
-        document.getElementById('buttonRun').value = 'Stop';
-      } else {
-        document.getElementById('buttonRun').value = 'Run';
       }
     });
   }
@@ -272,7 +269,6 @@ class ConwayAnimate extends Component {
         running: false,
         clear: true,
       });
-      document.getElementById('buttonRun').value = 'Run';
     } else {
       this.cleanUp();
     }
@@ -356,7 +352,7 @@ class ConwayAnimate extends Component {
   }
 
   //
-  // ─── MOUSE HANDLERS ─────────────────────────────────────────────────────────────
+  // ─── MOUSE/TOUCH HANDLERS ─────────────────────────────────────────────────────────────
   //
 
   canvasMouseDown = (event) => {
@@ -397,21 +393,36 @@ class ConwayAnimate extends Component {
   componentDidMount() {
     this.prepare();
     document.addEventListener("keydown", this.handleKeys, false);
-    document.addEventListener("keydown", this.handleKeys, false);
     document.addEventListener("mouseup", this.canvasMouseUp, false);
+    document.addEventListener("touchend", this.canvasMouseUp, false);
   }
 
   componentWillUnmount() {
     document.removeEventListener("keydown", this.handleKeys, false);
     document.removeEventListener("mouseup", this.canvasMouseUp, false);
+    document.removeEventListener("touchend", this.canvasMouseUp, false);
     window.cancelAnimationFrame(this.rAF);
   }
 
-  
-
   render() {
+    let { conwayConfig } = this.props;
+    let currentColors = conwayConfig.colors.schemes[conwayConfig.colors.current];
+
     return (
       <React.Fragment>
+        <MenuContainer
+          running={this.state.running}
+          currentColors={currentColors}
+          runHandler={this.runHandler}
+          stepHandler={this.stepHandler}
+          clearHandler={this.clearHandler}
+          trailHandler={this.trailHandler}
+          colorsHandler={this.colorsHandler}
+          gridHandler={this.gridHandler}
+          exportHandler={this.exportHandler}
+          updateWaitTime={this.updateWaitTime}
+          status={this.state.status}
+         />
         {this.state.age ?
           <ConwayRender
             rows={this.props.rows}
@@ -425,18 +436,6 @@ class ConwayAnimate extends Component {
           /> 
           : <h1>Loading...</h1>
         }
-        <ConwayControls 
-          {...this.props}
-          runHandler={this.runHandler}
-          stepHandler={this.stepHandler}
-          clearHandler={this.clearHandler}
-          trailHandler={this.trailHandler}
-          colorsHandler={this.colorsHandler}
-          gridHandler={this.gridHandler}
-          exportHandler={this.exportHandler}
-          updateWaitTime={this.updateWaitTime}
-          status={this.state.status}
-        />
       </React.Fragment>
     );
   }

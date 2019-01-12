@@ -9,41 +9,42 @@ class ConwayControls extends Component {
     }
   }
 
-  handleRunButtonClicked = (e) => {
-    e.preventDefault();
-    this.props.runHandler();
+  handleCloseButtonClicked = (e) => {
+    e.stopPropagation();
+    this.props.toggleMenu();
   }
-  handleStepButtonClicked = (e) =>{
-    e.preventDefault();
+
+  handleStepButtonClicked = (e) => {
+    e.stopPropagation();
     this.props.stepHandler();
   }
 
-  handleClearButtonClicked = (e) =>{
-    e.preventDefault();
+  handleClearButtonClicked = (e) => {
+    e.stopPropagation();
     this.props.clearHandler();
   }
 
-  handleExportButtonClicked = (e) =>{
-    e.preventDefault();
+  handleExportButtonClicked = (e) => {
+    e.stopPropagation();
     this.props.exportHandler();
   }
 
-  handleTrailButtonClicked = (e) =>{
-    e.preventDefault();
+  handleTrailButtonClicked = (e) => {
+    e.stopPropagation();
     this.props.trailHandler();
   }
 
-  handleGridButtonClicked = (e) =>{
-    e.preventDefault();
+  handleGridButtonClicked = (e) => {
+    e.stopPropagation();
     this.props.gridHandler();
   }
-  handleColorsButtonClicked = (e) =>{
-    e.preventDefault();
+  handleColorsButtonClicked = (e) => {
+    e.stopPropagation();
     this.props.colorsHandler();
   }
 
   handleSpeedSliderChange = (e) => {
-    e.preventDefault();
+    e.stopPropagation();
     let { value } = e.target;
     this.setState({ speedValue: value });
     this.props.updateWaitTime(value)
@@ -54,6 +55,10 @@ class ConwayControls extends Component {
     return (
       <div>
         <div className="box">
+          <input type="button" value="Close Menu" onClick={this.handleCloseButtonClicked} title="Key: S" />
+        </div>
+
+        <div className="box">
           <div className="subtitle">Running Information</div>
           <p className="info">
             <abbr title="Current Generation">Generation</abbr>: 
@@ -61,19 +66,17 @@ class ConwayControls extends Component {
             <abbr title="Number of live cells">Live cells</abbr>: 
             <span id="livecells">{status.livecells}</span>
           </p>
-
         </div>
 
         <div className="box controls">
           <div className="subtitle">Controls</div>
           <form action="">
-            <input type="button" value="Run" id="buttonRun" onClick={this.handleRunButtonClicked} title="Key: R" />
             <input type="button" value="Step" id="buttonStep" onClick={this.handleStepButtonClicked} title="Key: S" />
             <input type="button" value="Clear" id="buttonClear" onClick={this.handleClearButtonClicked} title="Key: C" />
             <input type="button" value="Export" id="buttonExport" onClick={this.handleExportButtonClicked} />
             <span id="exportUrl"> | <a id="exportUrlLink">Link</a> | <a id="exportTinyUrlLink" title="Tiny URL">Create micro URL</a></span>
           </form>
-          <input type="range" min="0" max="100" value={this.state.speedValue} onChange={this.handleSpeedSliderChange}/><label>Speed</label>
+          <input style={{margin: "10px"}} type="range" min="0" max="100" value={this.state.speedValue} onChange={this.handleSpeedSliderChange}/><label>Speed</label>
         </div>
 
         <div className="box layout">
@@ -94,7 +97,6 @@ class ConwayControls extends Component {
           {/* <div className="button"><a href="" title="">Guns</a></div> */}
           <div className="button"><a href="?autoplay=0&amp;trail=0&amp;grid=1&amp;colors=1&amp;zoom=1&amp;s=%5B{%2239%22:%5B110%5D},{%2240%22:%5B112%5D},{%2241%22:%5B109,110,113,114,115%5D}%5D" title="Acorn Patter">Acorn</a></div>
           <div className="button"><a href="?autoplay=0&amp;trail=0&amp;grid=1&amp;colors=1&amp;zoom=1&amp;s=random" title="Random Pattern">Random</a></div>
-          <div className="cl">&nbsp;</div>
         </div>
       </div>
     );

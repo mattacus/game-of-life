@@ -2,9 +2,7 @@ import React, { Component } from 'react';
 import ConwayAnimate from './ConwayAnimate';
 import { conwayConfig } from './helpers/config';
 import { listLife } from './helpers/listLife';
-
-const midX = window.innerWidth / 2;
-const midY = window.innerHeight / 2;
+import '../css/app.css';
 
 class ConwayApp extends Component {
   constructor(props) {
@@ -18,7 +16,6 @@ class ConwayApp extends Component {
       columns: 0
     }
     this.autoplay = false;
-    this.initialState = `[{"${(midY / 5)}":[${(midX / 5) + 1}]},{"${(midY / 5) + 1}":[${(midX / 5) + 3}]},{"${(midY / 5) + 2}":[${(midX / 5)},${(midX / 5) + 1},${(midX / 5) + 4},${(midX / 5) + 5},${(midX / 5) + 6}]}]`;
   }
 
   //
@@ -30,9 +27,15 @@ class ConwayApp extends Component {
     try {
       this.setState({ loading: true }, () => {
         listLife.init();   // Reset/init algorithm
-        this.loadConfig();      // Load config from URL (autoplay, colors, zoom, ...)
-        this.loadState();       // Load state from URL
-        this.setState({loading: false})
+        let { conwayConfig, rows, columns, initialState } = this.loadConfig();  // Load config from URL (autoplay, colors, zoom, ...)
+        this.loadState(initialState);       // Load state from URL
+        this.setState({
+          conwayConfig,
+          rows,
+          columns,
+          initialState,
+          loading: false
+        });
       })
     } catch (e) {
       console.log("Error: " + e);
@@ -76,21 +79,28 @@ class ConwayApp extends Component {
     
     rows = conwayConfig.zoom.schemes[conwayConfig.zoom.current].rows;
     columns = conwayConfig.zoom.schemes[conwayConfig.zoom.current].columns;
+    
+    const zoomFactor = conwayConfig.zoom.schemes[conwayConfig.zoom.current].cellSize + 1;
+    const midX = Math.round((window.innerWidth / 2) / zoomFactor);
+    const midY = Math.round((window.innerHeight / 2) / zoomFactor);
 
-    this.setState({ conwayConfig, rows, columns });
+    let initialState = `[{"${(midY)}":[${(midX) + 1}]},{"${(midY) + 1}":[${(midX) + 3}]},{"${(midY) + 2}":[${(midX)},${(midX) + 1},${(midX) + 4},${(midX) + 5},${(midX) + 6}]}]`;
+
+
+    return { conwayConfig, rows, columns, initialState };
   }
 
   /**
      * Load world state from URL parameter
      */
-  loadState() {
+  loadState(initialState) {
     let state, i, j, y, s = this.getUrlParameter('s');
 
     if (s === 'random') {
       this.randomState();
     } else {
       if (s == undefined) {
-        s = this.initialState;
+        s = initialState;
       }
 
       state = JSON.parse(decodeURI(s));

@@ -1,0 +1,58 @@
+
+/* Menu button styles */
+
+.menu-button {
+  position: fixed;
+  background-color: rgba(255, 255, 255, 0);
+  width: 40px;
+  height: 40px;
+  outline: none;
+}
+ 
+.menu-button:hover {
+  cursor: pointer;
+  transform: scale(1.2, 1.2);
+}
+
+.settings-button {
+  top: 10px;
+  left: 10px;
+}
+
+.run-button, .pause-button {
+  top: 10px;
+  left: 70px;
+}
+
+/* Sliding menu styles */
+
+.sliding-menu {
+  width: 33vw;
+  height: 100vh;
+  background-color: rgba(255, 255, 255, 0.7);
+  position: fixed;
+  top: 0;
+  left: 0;
+  transition: transform .3s cubic-bezier(0, .52, 0, 1);
+  overflow: scroll;
+  z-index: 1000;
+}
+ 
+.sliding-menu.hide {
+  transform: translate3d(-33vw, 0, 0);
+}
+ 
+.sliding-menu.show {
+  transform: translate3d(0vw, 0, 0);
+  overflow: hidden;
+}
+ 
+.sliding-menu h2 a {
+  color: #333;
+  margin-left: 15px;
+  text-decoration: none;
+}
+ 
+.sliding-menu h2 a:hover {
+  text-decoration: underline;
+}

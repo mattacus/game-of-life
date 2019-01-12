@@ -29,6 +29,8 @@
     "dotenv": "^6.2.0",
     "lodash.isequal": "^4.5.0",
     "react": "^16.7.0",
-    "react-dom": "^16.7.0"
+    "react-dom": "^16.7.0",
+    "react-icons": "^3.3.0",
+    "react-sidebar": "^3.0.2"
   }
 }
