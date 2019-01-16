@@ -1,39 +1,78 @@
 
-/* Menu button styles */
+/* Menu button icon styles */
 
 .menu-button {
   position: fixed;
   background-color: rgba(255, 255, 255, 0);
-  width: 40px;
-  height: 40px;
+  width: auto;
+  height: 10vh;
   outline: none;
 }
  
 .menu-button:hover {
   cursor: pointer;
-  transform: scale(1.2, 1.2);
 }
 
 .settings-button {
-  top: 10px;
-  left: 10px;
+  top: 1vh;
+  left: 1vw;
 }
 
 .run-button, .pause-button {
-  top: 10px;
-  left: 65px;
+  top: 1vh;
+  left: 8vh;
 }
 
 .step-button {
-  top: 10px;
-  left: 120px;
+  top: 1vh;
+  left: 15vh;
 }
 
 /* Sliding menu styles */
 
+/* Device specific media queries */
+@media (max-width: 650px) {
+  .sliding-menu {
+    width: 100vw;
+  }
+   
+  .sliding-menu.hide {
+    transform: translate3d(-100vw, 0, 0);
+  }
+}
+
+@media (min-width: 650px) and (max-width: 1280px) {
+  .sliding-menu {
+    width: 50vw;
+  }
+
+   .sliding-menu.hide {
+    transform: translate3d(-50vw, 0, 0);
+  }
+}
+
+@media (min-width: 1280px) and (max-width: 2000px) {
+  .sliding-menu {
+    width: 30vw;
+  }
+
+   .sliding-menu.hide {
+    transform: translate3d(-30vw, 0, 0);
+  }
+}
+
+@media (min-width: 2000px) and (max-width: 8000px) {
+  .sliding-menu {
+    width: 20vw;
+  }
+
+   .sliding-menu.hide {
+    transform: translate3d(-20vw, 0, 0);
+  }
+}
+
 .sliding-menu {
   position: fixed;
-  width: 320px;
   background-color: rgba(255, 255, 255, 0.5);
   top: 0;
   bottom: 0;
@@ -46,10 +85,6 @@
   height: 100%;
   overflow: scroll;
   -webkit-overflow-scrolling: touch;
-}
- 
-.sliding-menu.hide {
-  transform: translate3d(-320px, 0, 0);
 }
  
 .sliding-menu.show {

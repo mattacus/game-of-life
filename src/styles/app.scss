@@ -7,6 +7,8 @@
 
 body {
   margin: auto;
+  // font-size: calc(16px + 0.5vw);
+  // line-height: calc(1.1em + 0.5vw);
 }
 
 canvas {
@@ -16,28 +18,6 @@ canvas {
 }
 
 /* ################################### */
-
-// .box {
-//   margin: 0 0 26px 0;
-//   font: 12px "Verdana", sans-serif;
-// }
-
-.subtitle {
-  font: bold 16px "Helvetica", "Arial", sans-serif;
-  background: #BBB;
-  color: #222;
-  padding: 2px 4px 1px 4px;
-}
-
-.box .info {
-  margin: 4px 0;
-}
-
-.box .layout {
-  display: flex;
-  font-size: 20px;
-  padding: 0 0 0 10px;
-}
 
 .card {
   background-color: #FFFFFF;
@@ -65,18 +45,14 @@ canvas {
 
 .notification-text {
   text-align: center;
-  font-size: 16px;
 }
 
-#footer {
-  background: #DDDDDD;
-  color: #222222;
-  font-size: 12px;
-  padding: 6px;
+/* Viewport scaling for menu elements */
+
+.button, .card-header-title, .tag, .tag:not(body), .tag-card, .notification-text {
+  font-size: calc(16px + 0.5vw);
 }
 
-#footer a {
-  text-decoration: none;
-  font-weight: bold;
-  color: #222222;
+.button.is-large {
+  font-size: calc(20px + 0.5vw);
 }

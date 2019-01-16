@@ -8,31 +8,31 @@ class ConwayControls extends Component {
     }
   }
 
-  handleCloseButtonClicked = (e) => {
+  handleCloseButton = (e) => {
     e.stopPropagation();
     this.props.toggleMenu();
   }
 
-  handleClearButtonClicked = (e) => {
+  handleResetButton = (e) => {
     e.stopPropagation();
     this.props.clearHandler();
   }
 
-  handleExportButtonClicked = (e) => {
+  handleExportButton = (e) => {
     e.stopPropagation();
     this.props.exportHandler();
   }
 
-  handleTrailButtonClicked = (e) => {
+  handleTrailButton = (e) => {
     e.stopPropagation();
     this.props.trailHandler();
   }
 
-  handleGridButtonClicked = (e) => {
+  handleGridButton = (e) => {
     e.stopPropagation();
     this.props.gridHandler();
   }
-  handleColorsButtonClicked = (e) => {
+  handleColorsButton = (e) => {
     e.stopPropagation();
     this.props.colorsHandler();
   }
@@ -49,7 +49,7 @@ class ConwayControls extends Component {
     return (
       <div className="sliding-menu-container">
         <div className="box">
-          <button className="button is-large is-fullwidth is-inverted is-primary" onClick={this.handleCloseButtonClicked}>
+          <button className="button is-large is-fullwidth is-inverted is-primary" onPointerDown={this.handleCloseButton}>
             Hide Settings
           </button>
         </div>
@@ -80,17 +80,11 @@ class ConwayControls extends Component {
           </header>
           <div class="card-content">
             <div className="button-group">
-              <button className="button button-group-item" onClick={this.handleClearButtonClicked}>
-                Clear
+              <button className="button button-group-item" onPointerDown={this.handleResetButton}>
+                Reset
               </button>
-              <button className="button button-group-item" onClick={this.handleExportButtonClicked}>
+              <button className="button button-group-item" onPointerDown={this.handleExportButton}>
                 Export
-              </button>
-              <button className="button button-group-item">
-                <a id="exportUrlLink">Link</a>
-              </button>
-              <button className="button">
-                <a id="exportTinyUrlLink" title="Tiny URL">microURL</a>
               </button>
             </div>
             <div className="box">
@@ -98,13 +92,13 @@ class ConwayControls extends Component {
               <input className="slider is-fullwidth is-primary" type="range" step="1" min="0" max="100" value={this.state.speedValue} onChange={this.handleSpeedSliderChange}/>
             </div>
             <div className="button-group">
-              <button className="button button-group-item" onClick={this.handleTrailButtonClicked}>
+              <button className="button button-group-item" onPointerDown={this.handleTrailButton}>
                 Trail
             </button>
-              <button className="button button-group-item" onClick={this.handleGridButtonClicked}>
+              <button className="button button-group-item" onPointerDown={this.handleGridButton}>
                 Grid
             </button>
-              <button className="button button-group-item" onClick={this.handleColorsButtonClicked}>
+              <button className="button button-group-item" onPointerDown={this.handleColorsButton}>
                 Colors
             </button>
             </div>
