@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import ConwayAnimate from './ConwayAnimate';
 import { conwayConfig } from './helpers/config';
 import { listLife } from './helpers/listLife';
-import '../css/app.css';
+import '../styles/app.scss';
 
 class ConwayApp extends Component {
   constructor(props) {

@@ -113,7 +113,6 @@ class ConwayRender extends Component {
     this.cellSpace = 1;
   }
 
-
   //
   // ─── MOUSE/TOUCH HANDLERS ─────────────────────────────────────────────────────────────
   //
@@ -165,10 +164,10 @@ class ConwayRender extends Component {
   }
 
   componentWillUnmount() {
-    this._canvas.removeEventListener("mousedown", this.handleMouseDown, false);
-    this._canvas.removeEventListener("mousemove", this.handleMouseMove, false);
-    this._canvas.removeEventListener("touchstart", this.handleTouchStart, false);
-    this._canvas.removeEventListener("touchmove", this.handleTouchMove, false);
+    this._canvas.removeEventListener("mousedown", this.handleMouseDown);
+    this._canvas.removeEventListener("mousemove", this.handleMouseMove);
+    this._canvas.removeEventListener("touchstart", this.handleTouchStart);
+    this._canvas.removeEventListener("touchmove", this.handleTouchMove);
   }
 
   render() {

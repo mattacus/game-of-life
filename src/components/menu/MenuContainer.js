@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import MenuButtons from './MenuButtons';
-import Menu from './SlidingMenu';
+import SlidingMenu from './SlidingMenu';
 
 class MenuContainer extends Component {
   constructor(props) {
@@ -21,10 +21,11 @@ class MenuContainer extends Component {
         <MenuButtons
           running={this.props.running}
           runHandler={this.props.runHandler}
+          stepHandler={this.props.stepHandler}
           toggleMenu={this.toggleMenu}
           currentColors={this.props.currentColors}
         />
-        <Menu 
+        <SlidingMenu 
           {...this.props}
           toggleMenu={this.toggleMenu}
           menuVisibility={this.state.visible}

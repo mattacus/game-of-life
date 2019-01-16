@@ -57,25 +57,29 @@ export const conwayConfig = {
   colors: {
     current: 0,
     schemes: [
-      { // Classic
+      {
         dead: '#FFFFFF',
         trail: ['#dcdcdc'],
-        alive: ['#000000']
+        alive: ['#000000'],
+        name: 'Classic'
       },
-      { // Starlight
+      {
         dead: '#111111',
         trail: ['#222222'],
-        alive: ['#ffffff', '#f2f2f2', '#e6e6e6', '#d9d9d9', '#cccccc', '#bfbfbf', '#b3b3b3', '#a6a6a6', '#999999', '#8c8c8c', '#808080']
+        alive: ['#ffffff', '#f2f2f2', '#e6e6e6', '#d9d9d9', '#cccccc', '#bfbfbf', '#b3b3b3', '#a6a6a6', '#999999', '#8c8c8c', '#808080'],
+        name: 'Starlight'
       },
-      { // Magma
+      {
         dead: '#393e46',
         trail: ['#b55400'],
-        alive: ["#000004", "#140e36", "#3b0f70", "#641a80", "#8c2981", "#b73779", "#de4968", "#f7705c", "#fe9f6d", "#fecf92", "#fcfdbf"]
+        alive: ["#000004", "#140e36", "#3b0f70", "#641a80", "#8c2981", "#b73779", "#de4968", "#f7705c", "#fe9f6d", "#fecf92", "#fcfdbf"],
+        name: 'Magma'
       },
-      { // Ocean
+      {
         dead: '#35478C',
         trail: ["#6e40aa", "#6054c8", "#4c6edb", "#368ce1", "#23abd8", "#1ac7c2", "#1ddfa3", "#30ef82", "#52f667", "#7ff658", "#aff05b"],
-        alive: ['#16193B']
+        alive: ['#16193B'],
+        name: 'Ocean'
       },
 
     ]

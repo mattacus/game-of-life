@@ -21,25 +21,35 @@
 
 .run-button, .pause-button {
   top: 10px;
-  left: 70px;
+  left: 65px;
+}
+
+.step-button {
+  top: 10px;
+  left: 120px;
 }
 
 /* Sliding menu styles */
 
 .sliding-menu {
-  width: 33vw;
-  height: 100vh;
-  background-color: rgba(255, 255, 255, 0.7);
   position: fixed;
+  width: 320px;
+  background-color: rgba(255, 255, 255, 0.5);
   top: 0;
+  bottom: 0;
   left: 0;
   transition: transform .3s cubic-bezier(0, .52, 0, 1);
-  overflow: scroll;
   z-index: 1000;
+}
+
+.sliding-menu-container {
+  height: 100%;
+  overflow: scroll;
+  -webkit-overflow-scrolling: touch;
 }
  
 .sliding-menu.hide {
-  transform: translate3d(-33vw, 0, 0);
+  transform: translate3d(-320px, 0, 0);
 }
  
 .sliding-menu.show {

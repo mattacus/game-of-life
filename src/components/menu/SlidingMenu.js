@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import ConwayControls from './ConwayControls';
-import '../../css/menu.css';
+import '../../styles/menu.scss';
 
-class Menu extends Component {
+class SlidingMenu extends Component {
 
   render() {
     let visibility = "hide";
@@ -23,4 +23,4 @@ class Menu extends Component {
   }
 }
 
-export default Menu;
+export default SlidingMenu;

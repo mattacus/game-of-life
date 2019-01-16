@@ -230,7 +230,7 @@ class ConwayAnimate extends Component {
     }
 
     if (event.keyCode === 67) { // Key: C
-      this.clear();
+      this.clearHandler();
     } else if (event.keyCode === 82) { // Key: R
       this.runHandler();
     } else if (event.keyCode === 83) { // Key: S
@@ -293,7 +293,7 @@ class ConwayAnimate extends Component {
     let conwayConfig = JSON.parse(JSON.stringify(this.props.conwayConfig));
     let { status } = this.state;
     conwayConfig.colors.current = (conwayConfig.colors.current + 1) % conwayConfig.colors.schemes.length;
-    status.messages.layout = 'Color Scheme #' + (conwayConfig.colors.current);
+    status.messages.layout = 'Color Scheme: ' + (conwayConfig.colors.schemes[conwayConfig.colors.current].name);
     this.setState({ status });
     this.props.updateConfig(conwayConfig);
   }
@@ -343,7 +343,6 @@ class ConwayAnimate extends Component {
 
       document.getElementById('exportUrlLink').href = params;
       document.getElementById('exportTinyUrlLink').href = 'http://tinyurl.com/api-create.php?url=' + url + params;
-      document.getElementById('exportUrl').style.display = 'inline';
     }
   }
 
@@ -392,15 +391,15 @@ class ConwayAnimate extends Component {
 
   componentDidMount() {
     this.prepare();
-    document.addEventListener("keydown", this.handleKeys, false);
-    document.addEventListener("mouseup", this.canvasMouseUp, false);
-    document.addEventListener("touchend", this.canvasMouseUp, false);
+    document.addEventListener("keydown", this.handleKeys);
+    document.addEventListener("mouseup", this.canvasMouseUp);
+    document.addEventListener("touchend", this.canvasMouseUp);
   }
 
   componentWillUnmount() {
-    document.removeEventListener("keydown", this.handleKeys, false);
-    document.removeEventListener("mouseup", this.canvasMouseUp, false);
-    document.removeEventListener("touchend", this.canvasMouseUp, false);
+    document.removeEventListener("keydown", this.handleKeys);
+    document.removeEventListener("mouseup", this.canvasMouseUp);
+    document.removeEventListener("touchend", this.canvasMouseUp);
     window.cancelAnimationFrame(this.rAF);
   }
 

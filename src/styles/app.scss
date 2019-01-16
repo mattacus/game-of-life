@@ -1,0 +1,82 @@
+// Bulma & Bulma theme
+@import '../../node_modules/bulmaswatch/lumen/variables';
+@import '../../node_modules/bulma/bulma';
+@import '../../node_modules/bulma-slider/dist/css/bulma-slider';
+@import '../../node_modules/bulmaswatch/lumen/overrides';
+
+
+body {
+  margin: auto;
+}
+
+canvas {
+ border: 0;
+ padding: 0;
+ margin: 0;
+}
+
+/* ################################### */
+
+// .box {
+//   margin: 0 0 26px 0;
+//   font: 12px "Verdana", sans-serif;
+// }
+
+.subtitle {
+  font: bold 16px "Helvetica", "Arial", sans-serif;
+  background: #BBB;
+  color: #222;
+  padding: 2px 4px 1px 4px;
+}
+
+.box .info {
+  margin: 4px 0;
+}
+
+.box .layout {
+  display: flex;
+  font-size: 20px;
+  padding: 0 0 0 10px;
+}
+
+.card {
+  background-color: #FFFFFF;
+  margin-bottom: 1.5rem;
+}
+
+.card-header-title {
+  background: #EEEEEE;
+}
+
+.tag-card {
+  display: flex;
+  justify-content: center;
+  padding: 10px 0px 0px 0px;
+}
+
+.button-group {
+  display: flex;
+  justify-content: center;
+}
+
+.button-group-item {
+  flex-grow: 1;
+}
+
+.notification-text {
+  text-align: center;
+  font-size: 16px;
+}
+
+#footer {
+  background: #DDDDDD;
+  color: #222222;
+  font-size: 12px;
+  padding: 6px;
+}
+
+#footer a {
+  text-decoration: none;
+  font-weight: bold;
+  color: #222222;
+}
